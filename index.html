@@ -58,6 +58,35 @@
         .player-card h3 {
             color: #ff6b35;
             margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .remove-player {
+            background: rgba(255, 50, 50, 0.3);
+            border: 1px solid rgba(255, 50, 50, 0.5);
+            color: #ff6b35;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-player:hover {
+            background: rgba(255, 50, 50, 0.5);
+        }
+        
+        .add-player-card {
+            min-height: 180px;
+            transition: all 0.3s ease;
+        }
+        
+        .add-player-card:hover {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: rgba(255, 107, 53, 0.6);
+            transform: scale(1.02);
         }
         
         .input-group {
@@ -245,28 +274,25 @@
         <h1>🎮 Vermintide Versus - Suivi de Progression XP</h1>
         
         <div class="input-section">
-            <div class="player-inputs">
-                <div class="player-card">
+            <div class="player-inputs" id="playerInputs">
+                <div class="player-card" data-player="1">
                     <h3>Joueur 1</h3>
                     <div class="input-group">
                         <label>Nom (optionnel)</label>
-                        <input type="text" id="player1Name" placeholder="Votre pseudo">
+                        <input type="text" class="player-name" placeholder="Votre pseudo">
                     </div>
                     <div class="input-group">
                         <label>Niveau actuel</label>
-                        <input type="number" id="player1Level" min="0" max="250" value="0">
+                        <input type="number" class="player-level" min="0" max="250" value="0">
                     </div>
                 </div>
                 
-                <div class="player-card">
-                    <h3>Joueur 2</h3>
-                    <div class="input-group">
-                        <label>Nom (optionnel)</label>
-                        <input type="text" id="player2Name" placeholder="Pseudo de votre ami">
-                    </div>
-                    <div class="input-group">
-                        <label>Niveau actuel</label>
-                        <input type="number" id="player2Level" min="0" max="250" value="0">
+                <div class="player-card add-player-card" id="addPlayerCard">
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; cursor: pointer;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 3em; color: #ff6b35; margin-bottom: 10px;">+</div>
+                            <div style="color: #b8b8b8;">Ajouter un joueur</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -298,6 +324,8 @@
         }
         const totalXP = total;
         
+        let playerCount = 1;
+        
         function calculatePlayerStats(level, currentXP, isDoubleXP) {
             const cumulative = cumulativeXP[level] + currentXP;
             const percentage = (cumulative / totalXP * 100).toFixed(2);
@@ -322,100 +350,150 @@
             };
         }
         
+        function getAllPlayers() {
+            const players = [];
+            const cards = document.querySelectorAll('.player-card[data-player]');
+            cards.forEach(card => {
+                const playerNum = card.dataset.player;
+                const name = card.querySelector('.player-name').value || `Joueur ${playerNum}`;
+                const level = parseInt(card.querySelector('.player-level').value) || 0;
+                players.push({ name, level, playerNum });
+            });
+            return players;
+        }
+        
         function updateDisplay() {
-            const p1Level = parseInt(document.getElementById('player1Level').value) || 0;
-            const p2Level = parseInt(document.getElementById('player2Level').value) || 0;
-            const p1Name = document.getElementById('player1Name').value || 'Joueur 1';
-            const p2Name = document.getElementById('player2Name').value || 'Joueur 2';
             const isDoubleXP = document.getElementById('doubleXP').checked;
+            const players = getAllPlayers();
             
-            const p1Stats = calculatePlayerStats(p1Level, 0, isDoubleXP);
-            const p2Stats = calculatePlayerStats(p2Level, 0, isDoubleXP);
-            const diff = Math.abs(p1Stats.cumulative - p2Stats.cumulative);
+            // Stats cards - afficher tous les joueurs
+            let statsHTML = '';
+            players.forEach(player => {
+                const stats = calculatePlayerStats(player.level, 0, isDoubleXP);
+                statsHTML += `
+                    <div class="stat-card">
+                        <h4>${player.name}</h4>
+                        <div class="stat-value">${stats.cumulative.toLocaleString()} XP</div>
+                        <div>${stats.percentage}% du total</div>
+                        <div class="time-estimate">
+                            <h4>🎮 Pour atteindre le niveau 250</h4>
+                            <div class="value">${stats.gamesNeeded.toLocaleString()} parties</div>
+                            <div style="margin-top: 5px;">⏱️ ${stats.timeString}</div>
+                            <div style="margin-top: 5px; font-size: 0.9em; color: #b8b8b8;">${stats.xpRemaining.toLocaleString()} XP restants</div>
+                        </div>
+                    </div>
+                `;
+            });
             
-            // Stats cards
-            const statsHTML = `
-                <div class="stat-card">
-                    <h4>${p1Name}</h4>
-                    <div class="stat-value">${p1Stats.cumulative.toLocaleString()} XP</div>
-                    <div>${p1Stats.percentage}% du total</div>
-                    <div class="time-estimate">
-                        <h4>🎮 Pour atteindre le niveau 250</h4>
-                        <div class="value">${p1Stats.gamesNeeded.toLocaleString()} parties</div>
-                        <div style="margin-top: 5px;">⏱️ ${p1Stats.timeString}</div>
-                        <div style="margin-top: 5px; font-size: 0.9em; color: #b8b8b8;">${p1Stats.xpRemaining.toLocaleString()} XP restants</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <h4>${p2Name}</h4>
-                    <div class="stat-value">${p2Stats.cumulative.toLocaleString()} XP</div>
-                    <div>${p2Stats.percentage}% du total</div>
-                    <div class="time-estimate">
-                        <h4>🎮 Pour atteindre le niveau 250</h4>
-                        <div class="value">${p2Stats.gamesNeeded.toLocaleString()} parties</div>
-                        <div style="margin-top: 5px;">⏱️ ${p2Stats.timeString}</div>
-                        <div style="margin-top: 5px; font-size: 0.9em; color: #b8b8b8;">${p2Stats.xpRemaining.toLocaleString()} XP restants</div>
-                    </div>
-                </div>
+            // Ajouter la carte XP total
+            statsHTML += `
                 <div class="stat-card">
                     <h4>XP Total (Niveau 250)</h4>
                     <div class="stat-value">${totalXP.toLocaleString()} XP</div>
                     <div>Objectif final</div>
                 </div>
-                <div class="stat-card">
-                    <h4>Différence</h4>
-                    <div class="stat-value">${diff.toLocaleString()} XP</div>
-                    <div>${p1Stats.cumulative > p2Stats.cumulative ? p1Name : p2Name} en avance</div>
-                </div>
             `;
+            
+            // Si plusieurs joueurs, afficher les différences
+            if (players.length > 1) {
+                const stats = players.map(p => calculatePlayerStats(p.level, 0, isDoubleXP));
+                const maxXP = Math.max(...stats.map(s => s.cumulative));
+                const minXP = Math.min(...stats.map(s => s.cumulative));
+                const diff = maxXP - minXP;
+                const leader = players[stats.findIndex(s => s.cumulative === maxXP)];
+                
+                statsHTML += `
+                    <div class="stat-card">
+                        <h4>Différence</h4>
+                        <div class="stat-value">${diff.toLocaleString()} XP</div>
+                        <div>${leader.name} en avance</div>
+                    </div>
+                `;
+            }
+            
             document.getElementById('statsGrid').innerHTML = statsHTML;
             
-            // Comparison
-            const compHTML = `
-                <h2>📊 Comparaison de Progression</h2>
-                <div style="margin-bottom: 20px;">
-                    <strong>${p1Name} - Niveau ${p1Level}</strong>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${p1Stats.percentage}%">${p1Stats.percentage}%</div>
+            // Comparison - afficher tous les joueurs
+            let compHTML = '<h2>📊 Comparaison de Progression</h2>';
+            players.forEach(player => {
+                const stats = calculatePlayerStats(player.level, 0, isDoubleXP);
+                compHTML += `
+                    <div style="margin-bottom: 20px;">
+                        <strong>${player.name} - Niveau ${player.level}</strong>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${stats.percentage}%">${stats.percentage}%</div>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <strong>${p2Name} - Niveau ${p2Level}</strong>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${p2Stats.percentage}%">${p2Stats.percentage}%</div>
-                    </div>
-                </div>
-            `;
+                `;
+            });
             document.getElementById('comparisonSection').innerHTML = compHTML;
             
             // Table
             let tableHTML = '';
             for (let i = 0; i <= 250; i++) {
-                const isP1 = i === p1Level;
-                const isP2 = i === p2Level;
-                const highlight = (isP1 || isP2) ? 'highlight' : '';
+                const playersAtLevel = players.filter(p => p.level === i);
+                const highlight = playersAtLevel.length > 0 ? 'highlight' : '';
                 let levelLabel = `Niveau ${i}`;
-                if (isP1 && isP2) {
-                    levelLabel += ` (${p1Name} & ${p2Name})`;
-                } else if (isP1) {
-                    levelLabel += ` (${p1Name})`;
-                } else if (isP2) {
-                    levelLabel += ` (${p2Name})`;
+                
+                if (playersAtLevel.length > 0) {
+                    const names = playersAtLevel.map(p => p.name).join(' & ');
+                    levelLabel += ` (${names})`;
                 }
+                
                 tableHTML += `
                     <tr class="${highlight}">
-                        <td style="padding: 15px; font-weight: ${isP1 || isP2 ? 'bold' : 'normal'};">${levelLabel} - ${cumulativeXP[i].toLocaleString()} XP cumulés (${(cumulativeXP[i] / totalXP * 100).toFixed(2)}%)</td>
+                        <td style="padding: 15px; font-weight: ${playersAtLevel.length > 0 ? 'bold' : 'normal'};">${levelLabel} - ${cumulativeXP[i].toLocaleString()} XP cumulés (${(cumulativeXP[i] / totalXP * 100).toFixed(2)}%)</td>
                     </tr>
                 `;
             }
             document.getElementById('tableBody').innerHTML = tableHTML;
         }
         
-        document.getElementById('player1Level').addEventListener('input', updateDisplay);
-        document.getElementById('player2Level').addEventListener('input', updateDisplay);
-        document.getElementById('player1Name').addEventListener('input', updateDisplay);
-        document.getElementById('player2Name').addEventListener('input', updateDisplay);
+        function addPlayer() {
+            playerCount++;
+            const newCard = document.createElement('div');
+            newCard.className = 'player-card';
+            newCard.dataset.player = playerCount;
+            newCard.innerHTML = `
+                <h3>
+                    Joueur ${playerCount}
+                    <button class="remove-player" onclick="removePlayer(${playerCount})">✕ Retirer</button>
+                </h3>
+                <div class="input-group">
+                    <label>Nom (optionnel)</label>
+                    <input type="text" class="player-name" placeholder="Pseudo du joueur ${playerCount}">
+                </div>
+                <div class="input-group">
+                    <label>Niveau actuel</label>
+                    <input type="number" class="player-level" min="0" max="250" value="0">
+                </div>
+            `;
+            
+            const addCard = document.getElementById('addPlayerCard');
+            document.getElementById('playerInputs').insertBefore(newCard, addCard);
+            
+            // Ajouter les event listeners
+            newCard.querySelector('.player-name').addEventListener('input', updateDisplay);
+            newCard.querySelector('.player-level').addEventListener('input', updateDisplay);
+            
+            updateDisplay();
+        }
+        
+        function removePlayer(playerNum) {
+            const card = document.querySelector(`.player-card[data-player="${playerNum}"]`);
+            if (card) {
+                card.remove();
+                updateDisplay();
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('addPlayerCard').addEventListener('click', addPlayer);
         document.getElementById('doubleXP').addEventListener('change', updateDisplay);
+        
+        // Event listeners pour le joueur 1
+        document.querySelector('.player-card[data-player="1"] .player-name').addEventListener('input', updateDisplay);
+        document.querySelector('.player-card[data-player="1"] .player-level').addEventListener('input', updateDisplay);
         
         updateDisplay();
     </script>
