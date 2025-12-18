@@ -195,6 +195,49 @@
             background: #ff6b35;
             border-radius: 5px;
         }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 107, 53, 0.1);
+            border-radius: 8px;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #ff6b35;
+        }
+        
+        .checkbox-container label {
+            margin: 0;
+            cursor: pointer;
+            color: #fff;
+            font-size: 1em;
+        }
+        
+        .time-estimate {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.15) 0%, rgba(255, 107, 53, 0.08) 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px solid rgba(255, 107, 53, 0.4);
+        }
+        
+        .time-estimate h4 {
+            color: #ff6b35;
+            margin-bottom: 8px;
+        }
+        
+        .time-estimate .value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -213,10 +256,6 @@
                         <label>Niveau actuel</label>
                         <input type="number" id="player1Level" min="0" max="250" value="0">
                     </div>
-                    <div class="input-group">
-                        <label>XP dans le niveau actuel</label>
-                        <input type="number" id="player1XP" min="0" value="0">
-                    </div>
                 </div>
                 
                 <div class="player-card">
@@ -229,11 +268,12 @@
                         <label>Niveau actuel</label>
                         <input type="number" id="player2Level" min="0" max="250" value="0">
                     </div>
-                    <div class="input-group">
-                        <label>XP dans le niveau actuel</label>
-                        <input type="number" id="player2XP" min="0" value="0">
-                    </div>
                 </div>
+            </div>
+            
+            <div class="checkbox-container" style="margin-top: 20px; justify-content: center;">
+                <input type="checkbox" id="doubleXP">
+                <label for="doubleXP">🔥 Double XP</label>
             </div>
         </div>
         
@@ -242,14 +282,6 @@
         
         <div class="table-container">
             <table id="xpTable">
-                <thead>
-                    <tr>
-                        <th>Niveau</th>
-                        <th>XP requis</th>
-                        <th>XP cumulé</th>
-                        <th>% du total</th>
-                    </tr>
-                </thead>
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
@@ -266,26 +298,39 @@
         }
         const totalXP = total;
         
-        function calculatePlayerStats(level, currentXP) {
+        function calculatePlayerStats(level, currentXP, isDoubleXP) {
             const cumulative = cumulativeXP[level] + currentXP;
             const percentage = (cumulative / totalXP * 100).toFixed(2);
+            const xpRemaining = totalXP - cumulative;
+            const xpPerGame = isDoubleXP ? 2000 : 1000;
+            const gamesNeeded = Math.ceil(xpRemaining / xpPerGame);
+            const minutesNeeded = gamesNeeded * 20;
+            const hoursNeeded = Math.floor(minutesNeeded / 60);
+            const remainingMinutes = minutesNeeded % 60;
+            const daysNeeded = Math.floor(hoursNeeded / 24);
+            const remainingHours = hoursNeeded % 24;
+            
             return {
                 cumulative,
                 percentage,
-                xpToNextLevel: level < 250 ? xpPerLevel[level + 1] - currentXP : 0
+                xpToNextLevel: level < 250 ? xpPerLevel[level + 1] - currentXP : 0,
+                xpRemaining,
+                gamesNeeded,
+                timeString: daysNeeded > 0 
+                    ? `${daysNeeded}j ${remainingHours}h ${remainingMinutes}min` 
+                    : `${remainingHours}h ${remainingMinutes}min`
             };
         }
         
         function updateDisplay() {
             const p1Level = parseInt(document.getElementById('player1Level').value) || 0;
-            const p1XP = parseInt(document.getElementById('player1XP').value) || 0;
             const p2Level = parseInt(document.getElementById('player2Level').value) || 0;
-            const p2XP = parseInt(document.getElementById('player2XP').value) || 0;
             const p1Name = document.getElementById('player1Name').value || 'Joueur 1';
             const p2Name = document.getElementById('player2Name').value || 'Joueur 2';
+            const isDoubleXP = document.getElementById('doubleXP').checked;
             
-            const p1Stats = calculatePlayerStats(p1Level, p1XP);
-            const p2Stats = calculatePlayerStats(p2Level, p2XP);
+            const p1Stats = calculatePlayerStats(p1Level, 0, isDoubleXP);
+            const p2Stats = calculatePlayerStats(p2Level, 0, isDoubleXP);
             const diff = Math.abs(p1Stats.cumulative - p2Stats.cumulative);
             
             // Stats cards
@@ -294,11 +339,23 @@
                     <h4>${p1Name}</h4>
                     <div class="stat-value">${p1Stats.cumulative.toLocaleString()} XP</div>
                     <div>${p1Stats.percentage}% du total</div>
+                    <div class="time-estimate">
+                        <h4>🎮 Pour atteindre le niveau 250</h4>
+                        <div class="value">${p1Stats.gamesNeeded.toLocaleString()} parties</div>
+                        <div style="margin-top: 5px;">⏱️ ${p1Stats.timeString}</div>
+                        <div style="margin-top: 5px; font-size: 0.9em; color: #b8b8b8;">${p1Stats.xpRemaining.toLocaleString()} XP restants</div>
+                    </div>
                 </div>
                 <div class="stat-card">
                     <h4>${p2Name}</h4>
                     <div class="stat-value">${p2Stats.cumulative.toLocaleString()} XP</div>
                     <div>${p2Stats.percentage}% du total</div>
+                    <div class="time-estimate">
+                        <h4>🎮 Pour atteindre le niveau 250</h4>
+                        <div class="value">${p2Stats.gamesNeeded.toLocaleString()} parties</div>
+                        <div style="margin-top: 5px;">⏱️ ${p2Stats.timeString}</div>
+                        <div style="margin-top: 5px; font-size: 0.9em; color: #b8b8b8;">${p2Stats.xpRemaining.toLocaleString()} XP restants</div>
+                    </div>
                 </div>
                 <div class="stat-card">
                     <h4>XP Total (Niveau 250)</h4>
@@ -337,12 +394,17 @@
                 const isP1 = i === p1Level;
                 const isP2 = i === p2Level;
                 const highlight = (isP1 || isP2) ? 'highlight' : '';
+                let levelLabel = `Niveau ${i}`;
+                if (isP1 && isP2) {
+                    levelLabel += ` (${p1Name} & ${p2Name})`;
+                } else if (isP1) {
+                    levelLabel += ` (${p1Name})`;
+                } else if (isP2) {
+                    levelLabel += ` (${p2Name})`;
+                }
                 tableHTML += `
                     <tr class="${highlight}">
-                        <td>${i}${isP1 ? ` (${p1Name})` : ''}${isP2 ? ` (${p2Name})` : ''}</td>
-                        <td>${xpPerLevel[i].toLocaleString()}</td>
-                        <td>${cumulativeXP[i].toLocaleString()}</td>
-                        <td>${(cumulativeXP[i] / totalXP * 100).toFixed(2)}%</td>
+                        <td style="padding: 15px; font-weight: ${isP1 || isP2 ? 'bold' : 'normal'};">${levelLabel} - ${cumulativeXP[i].toLocaleString()} XP cumulés (${(cumulativeXP[i] / totalXP * 100).toFixed(2)}%)</td>
                     </tr>
                 `;
             }
@@ -350,11 +412,10 @@
         }
         
         document.getElementById('player1Level').addEventListener('input', updateDisplay);
-        document.getElementById('player1XP').addEventListener('input', updateDisplay);
         document.getElementById('player2Level').addEventListener('input', updateDisplay);
-        document.getElementById('player2XP').addEventListener('input', updateDisplay);
         document.getElementById('player1Name').addEventListener('input', updateDisplay);
         document.getElementById('player2Name').addEventListener('input', updateDisplay);
+        document.getElementById('doubleXP').addEventListener('change', updateDisplay);
         
         updateDisplay();
     </script>
