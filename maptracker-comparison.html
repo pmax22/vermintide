@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vermintide 2 Map Tracker - Comparaison</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e4e4e4;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 2px solid #ff6b35;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 107, 53, 0.4);
+            transform: translateX(-5px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff6b35;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .players-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .player-card {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 107, 53, 0.4);
+            position: relative;
+        }
+
+        .player-card h3 {
+            color: #ff6b35;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1em;
+        }
+
+        .player-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .player-card input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #e4e4e4;
+            font-size: 0.9em;
+        }
+
+        .player-card textarea {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #e4e4e4;
+            font-size: 0.85em;
+            resize: vertical;
+            min-height: 60px;
+            font-family: monospace;
+        }
+
+        .remove-btn {
+            background: rgba(255, 50, 50, 0.3);
+            border: 1px solid rgba(255, 50, 50, 0.5);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: rgba(255, 50, 50, 0.5);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #e55a2b;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .completed-all {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .completed-some {
+            background: rgba(255, 193, 7, 0.3);
+        }
+
+        .completed-none {
+            background: rgba(244, 67, 54, 0.3);
+        }
+
+        .act-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .act-title {
+            background: linear-gradient(90deg, #ff6b35 0%, #ff8c42 100%);
+            padding: 15px 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th:first-child, td:first-child {
+            width: 40%;
+        }
+
+        th:not(:first-child), td:not(:first-child) {
+            width: 12%;
+        }
+
+        th {
+            background: rgba(255, 107, 53, 0.2);
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            color: #ff6b35;
+            border-bottom: 2px solid rgba(255, 107, 53, 0.5);
+            vertical-align: middle;
+        }
+
+        th:first-child {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        td {
+            padding: 15px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            vertical-align: middle;
+        }
+
+        td:first-child {
+            font-weight: 500;
+            padding-left: 20px;
+        }
+
+        td:not(:first-child) {
+            text-align: center;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .cell-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .player-dots {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .player-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .player-dot:hover {
+            transform: scale(1.2);
+            border-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+
+        .player-dot.completed {
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .progress {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+            color: #ff6b35;
+        }
+
+        .message {
+            text-align: center;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .seed-output {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .seed-output h3 {
+            color: #ff6b35;
+            margin-bottom: 10px;
+        }
+
+        .seed-output textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #e4e4e4;
+            font-size: 0.9em;
+            resize: vertical;
+            min-height: 80px;
+            font-family: monospace;
+        }
+
+        @media (max-width: 768px) {
+            .back-button {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+            
+            .container {
+                padding-top: 0;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .players-section {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="maptracker.html" class="back-button">← Retour au Map Tracker</a>
+
+    <div class="container">
+        <h1>🗡️ Map Tracker - Comparaison 🗡️</h1>
+        
+        <div class="controls">
+            <h2 style="text-align: center; color: #ff6b35; margin-bottom: 15px;">👥 Joueurs</h2>
+            <div class="players-section" id="playersSection">
+                <div class="player-card" data-player="1">
+                    <h3>
+                        <span><span class="player-indicator" style="background: #ff6b35;"></span>Joueur 1</span>
+                    </h3>
+                    <input type="text" class="player-name" placeholder="Nom du joueur (optionnel)">
+                    <textarea class="player-seed" placeholder="Collez votre seed ici"></textarea>
+                    <button onclick="loadPlayerSeed(1)" style="width: 100%; margin-top: 5px;">Charger la seed</button>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="addPlayerBtn" onclick="addPlayer()">+ Ajouter un joueur</button>
+                <button onclick="compareAll()">🔍 Comparer</button>
+                <button onclick="generateGroupSeed()">💾 Générer seed du groupe</button>
+                <button onclick="clearAll()">🗑️ Tout effacer</button>
+            </div>
+
+            <div id="message"></div>
+            <div class="progress" id="progress"></div>
+
+            <div id="seedOutput" class="seed-output" style="display: none;">
+                <h3>🎯 Seed mise à jour du groupe</h3>
+                <p style="margin-bottom: 10px; font-size: 0.9em;">Copiez cette seed et distribuez-la à tous les joueurs pour la prochaine session :</p>
+                <textarea id="groupSeedText" readonly></textarea>
+                <button onclick="copySeedToClipboard()" style="width: 100%; margin-top: 10px;">📋 Copier la seed</button>
+            </div>
+        </div>
+
+        <div class="legend" id="legend" style="display: none;">
+            <div class="legend-item">
+                <div class="legend-box completed-all"></div>
+                <span>Tous ont complété</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box completed-some"></div>
+                <span>Partiellement complété (cliquez pour marquer)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box completed-none"></div>
+                <span>À faire ensemble</span>
+            </div>
+        </div>
+
+        <div id="mapsContainer"></div>
+    </div>
+
+    <script>
+        const maps = {
+            "Campaign - Act 1": ["Righteous Stand", "Convocation of Decay", "Hunger in the Dark", "Halescourge"],
+            "Campaign - Act 2": ["Athel Yenlui", "The Screaming Bell", "Fort Brachsenbrücke", "Into the Nest"],
+            "Campaign - Act 3": ["Against the Grain", "Empire in Flames", "Festering Ground", "The War Camp"],
+            "Campaign - Act 4": ["The Skittergate"],
+            "The Curse of Drachenfels": ["Old Haunts", "Blood in the Darkness", "The Enchanter's Lair"],
+            "A Treacherous Adventure": ["Trail of Treachery", "Tower of Treachery"],
+            "Karak Azgaraz": ["Mission of Mercy", "A Grudge Served Cold", "Khazukan Kazakit-ha !", "A Parting of the Waves"],
+            "Verminous Dreams": ["The Forsaken Temple", "Devious Delvings", "The Well of Dreams"],
+            "Reikland Tales": ["Return to the Reik"],
+            "Shadows over Bögenhafen": ["The Pit", "The Blightreaper"],
+            "Back to Ubersreik": ["The Horn of Magnus", "Garden of Morr", "Engines of War"],
+            "Winds of Magic": ["Dark Omens"]
+        };
+
+        const heroes = ["Bardin", "Markus", "Sienna", "Kerillian", "Victor"];
+        const playerColors = ['#ff6b35', '#4caf50', '#2196f3', '#9c27b0'];
+        let playerCount = 1;
+        let playerData = {};
+
+        function createTable() {
+            const container = document.getElementById('mapsContainer');
+            container.innerHTML = '';
+            
+            for (const [category, mapList] of Object.entries(maps)) {
+                const section = document.createElement('div');
+                section.className = 'act-section';
+                
+                const title = document.createElement('div');
+                title.className = 'act-title';
+                title.textContent = category;
+                section.appendChild(title);
+                
+                const table = document.createElement('table');
+                
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                const thMap = document.createElement('th');
+                thMap.textContent = 'Map';
+                headerRow.appendChild(thMap);
+                
+                heroes.forEach(hero => {
+                    const th = document.createElement('th');
+                    th.textContent = hero;
+                    headerRow.appendChild(th);
+                });
+                
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                
+                const tbody = document.createElement('tbody');
+                
+                mapList.forEach(map => {
+                    const row = document.createElement('tr');
+                    row.dataset.map = map;
+                    const tdMap = document.createElement('td');
+                    tdMap.textContent = map;
+                    row.appendChild(tdMap);
+                    
+                    heroes.forEach(hero => {
+                        const td = document.createElement('td');
+                        td.dataset.hero = hero;
+                        td.dataset.map = map;
+                        row.appendChild(td);
+                    });
+                    
+                    tbody.appendChild(row);
+                });
+                
+                table.appendChild(tbody);
+                section.appendChild(table);
+                container.appendChild(section);
+            }
+        }
+
+        function addPlayer() {
+            if (playerCount >= 4) {
+                showMessage('Maximum 4 joueurs autorisés', 'error');
+                return;
+            }
+
+            playerCount++;
+            const playersSection = document.getElementById('playersSection');
+            
+            const playerCard = document.createElement('div');
+            playerCard.className = 'player-card';
+            playerCard.dataset.player = playerCount;
+            playerCard.innerHTML = `
+                <h3>
+                    <span><span class="player-indicator" style="background: ${playerColors[playerCount - 1]};"></span>Joueur ${playerCount}</span>
+                    <button class="remove-btn" onclick="removePlayer(${playerCount})">✕</button>
+                </h3>
+                <input type="text" class="player-name" placeholder="Nom du joueur (optionnel)">
+                <textarea class="player-seed" placeholder="Collez votre seed ici"></textarea>
+                <button onclick="loadPlayerSeed(${playerCount})" style="width: 100%; margin-top: 5px;">Charger la seed</button>
+            `;
+            
+            playersSection.appendChild(playerCard);
+            
+            if (playerCount >= 4) {
+                document.getElementById('addPlayerBtn').disabled = true;
+            }
+        }
+
+        function removePlayer(playerNum) {
+            const card = document.querySelector(`.player-card[data-player="${playerNum}"]`);
+            if (card && playerNum > 1) {
+                card.remove();
+                delete playerData[playerNum];
+                playerCount--;
+                document.getElementById('addPlayerBtn').disabled = false;
+                compareAll();
+            }
+        }
+
+        function loadPlayerSeed(playerNum) {
+            const card = document.querySelector(`.player-card[data-player="${playerNum}"]`);
+            const seedInput = card.querySelector('.player-seed');
+            const nameInput = card.querySelector('.player-name');
+            const seed = seedInput.value.trim();
+            
+            if (!seed) {
+                showMessage(`Veuillez entrer une seed pour le Joueur ${playerNum}`, 'error');
+                return;
+            }
+            
+            try {
+                const json = atob(seed);
+                const state = JSON.parse(json);
+                
+                playerData[playerNum] = {
+                    name: nameInput.value.trim() || `Joueur ${playerNum}`,
+                    data: state
+                };
+                
+                showMessage(`Seed chargée pour ${playerData[playerNum].name}`, 'success');
+                compareAll();
+            } catch (e) {
+                showMessage(`Seed invalide pour le Joueur ${playerNum}`, 'error');
+            }
+        }
+
+        function toggleCompletion(map, hero, playerNum) {
+            const activePlayers = Object.keys(playerData);
+            
+            if (activePlayers.length === 0) {
+                showMessage('Veuillez charger au moins une seed de joueur', 'error');
+                return;
+            }
+
+            const key = `${map}_${hero}`;
+            
+            // Toggle pour le joueur spécifique
+            if (playerData[playerNum].data[key] === 1) {
+                delete playerData[playerNum].data[key];
+            } else {
+                playerData[playerNum].data[key] = 1;
+            }
+            
+            compareAll();
+        }
+
+        function compareAll() {
+            const activePlayers = Object.keys(playerData);
+            
+            if (activePlayers.length === 0) {
+                createTable();
+                document.getElementById('legend').style.display = 'none';
+                document.getElementById('progress').textContent = '';
+                return;
+            }
+
+            document.getElementById('legend').style.display = 'flex';
+            createTable();
+
+            const allMaps = Object.values(maps).flat();
+            let totalCompleted = 0;
+            let totalMissing = 0;
+
+            allMaps.forEach(map => {
+                heroes.forEach(hero => {
+                    const key = `${map}_${hero}`;
+                    let completedPlayers = [];
+
+                    activePlayers.forEach(playerNum => {
+                        if (playerData[playerNum].data[key] === 1) {
+                            completedPlayers.push(parseInt(playerNum));
+                        }
+                    });
+
+                    const cell = document.querySelector(`tr[data-map="${map}"] td[data-hero="${hero}"]`);
+                    if (cell) {
+                        const content = document.createElement('div');
+                        content.className = 'cell-content';
+                        
+                        if (completedPlayers.length === activePlayers.length) {
+                            cell.style.background = 'rgba(76, 175, 80, 0.3)';
+                            content.innerHTML = '<strong>✓</strong>';
+                            
+                            // Ajouter des points même quand tout est complété
+                            const dots = document.createElement('div');
+                            dots.className = 'player-dots';
+                            activePlayers.forEach(playerNum => {
+                                const dot = document.createElement('div');
+                                dot.className = 'player-dot completed';
+                                const pNum = parseInt(playerNum);
+                                dot.style.background = playerColors[pNum - 1];
+                                dot.onclick = (e) => {
+                                    e.stopPropagation();
+                                    toggleCompletion(map, hero, playerNum);
+                                };
+                                dots.appendChild(dot);
+                            });
+                            content.appendChild(dots);
+                            totalCompleted++;
+                        } else if (completedPlayers.length > 0) {
+                            cell.style.background = 'rgba(255, 193, 7, 0.3)';
+                            content.innerHTML = `<strong>${completedPlayers.length}/${activePlayers.length}</strong>`;
+                            
+                            // Ajouter des points colorés pour chaque joueur
+                            const dots = document.createElement('div');
+                            dots.className = 'player-dots';
+                            activePlayers.forEach(playerNum => {
+                                const dot = document.createElement('div');
+                                dot.className = 'player-dot';
+                                const pNum = parseInt(playerNum);
+                                const isCompleted = completedPlayers.includes(pNum);
+                                dot.style.background = isCompleted ? playerColors[pNum - 1] : 'transparent';
+                                if (isCompleted) dot.classList.add('completed');
+                                dot.onclick = (e) => {
+                                    e.stopPropagation();
+                                    toggleCompletion(map, hero, playerNum);
+                                };
+                                dots.appendChild(dot);
+                            });
+                            content.appendChild(dots);
+                        } else {
+                            cell.style.background = 'rgba(244, 67, 54, 0.3)';
+                            content.innerHTML = '<strong>✗</strong>';
+                            
+                            // Ajouter des points vides cliquables
+                            const dots = document.createElement('div');
+                            dots.className = 'player-dots';
+                            activePlayers.forEach(playerNum => {
+                                const dot = document.createElement('div');
+                                dot.className = 'player-dot';
+                                const pNum = parseInt(playerNum);
+                                dot.style.background = 'transparent';
+                                dot.style.borderColor = playerColors[pNum - 1];
+                                dot.onclick = (e) => {
+                                    e.stopPropagation();
+                                    toggleCompletion(map, hero, playerNum);
+                                };
+                                dots.appendChild(dot);
+                            });
+                            content.appendChild(dots);
+                            totalMissing++;
+                        }
+                        
+                        cell.innerHTML = '';
+                        cell.appendChild(content);
+                    }
+                });
+            });
+
+            const total = allMaps.length * heroes.length;
+            const percentage = ((totalCompleted / total) * 100).toFixed(1);
+            
+            document.getElementById('progress').innerHTML = `
+                <strong>Progression commune:</strong> ${totalCompleted}/${total} complétées par tous (${percentage}%)<br>
+                <strong>${totalMissing}</strong> maps/héros restent à compléter en groupe
+            `;
+        }
+
+        function generateGroupSeed() {
+            const activePlayers = Object.keys(playerData);
+            
+            if (activePlayers.length === 0) {
+                showMessage('Aucune donnée à générer. Veuillez charger des seeds de joueurs.', 'error');
+                return;
+            }
+
+            // Créer une seed unique qui combine tous les joueurs
+            const mergedData = {};
+            
+            const allMaps = Object.values(maps).flat();
+            allMaps.forEach(map => {
+                heroes.forEach(hero => {
+                    const key = `${map}_${hero}`;
+                    
+                    // Si au moins un joueur a complété, on marque comme complété
+                    activePlayers.forEach(playerNum => {
+                        if (playerData[playerNum].data[key] === 1) {
+                            mergedData[key] = 1;
+                        }
+                    });
+                });
+            });
+
+            const json = JSON.stringify(mergedData);
+            const seed = btoa(json);
+            
+            document.getElementById('groupSeedText').value = seed;
+            document.getElementById('seedOutput').style.display = 'block';
+            showMessage('Seed du groupe générée ! Partagez-la avec tous les joueurs.', 'success');
+        }
+
+        function copySeedToClipboard() {
+            const textarea = document.getElementById('groupSeedText');
+            textarea.select();
+            document.execCommand('copy');
+            showMessage('Seed copiée dans le presse-papier !', 'success');
+        }
+
+        function clearAll() {
+            if (confirm('Êtes-vous sûr de vouloir tout effacer ?')) {
+                playerData = {};
+                
+                document.querySelectorAll('.player-seed').forEach(textarea => {
+                    textarea.value = '';
+                });
+                
+                document.querySelectorAll('.player-name').forEach(input => {
+                    input.value = '';
+                });
+                
+                document.getElementById('seedOutput').style.display = 'none';
+                createTable();
+                document.getElementById('legend').style.display = 'none';
+                document.getElementById('progress').textContent = '';
+                showMessage('Toutes les données ont été effacées', 'success');
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            
+            setTimeout(() => {
+                messageDiv.textContent = '';
+                messageDiv.className = '';
+            }, 4000);
+        }
+
+        createTable();
+    </script>
+</body>
+</html>
