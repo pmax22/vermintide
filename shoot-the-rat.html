@@ -260,7 +260,7 @@
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-button">Retour</a>
+    <a href="index.html" class="back-button" style="z-index: 9999;">Retour</a>
 
     <div class="game-container" id="gameContainer">
         <!-- HUD -->
@@ -311,6 +311,10 @@
             <h1 class="screen-title">Partie Terminée !</h1>
             
             <div class="game-stats">
+                <div class="stat-row">
+                    <span class="stat-label">Difficulté</span>
+                    <span class="stat-value" id="difficultyDisplay">Vétéran</span>
+                </div>
                 <div class="stat-row">
                     <span class="stat-label">Rats Tués</span>
                     <span class="stat-value" id="finalScore">0</span>
@@ -504,7 +508,17 @@
                 document.getElementById('highScore').textContent = highScore;
             }
             
+            // Difficulty names
+            const difficultyNames = {
+                easy: 'Recrue',
+                normal: 'Vétéran',
+                hard: 'Champion',
+                legend: 'Légende',
+                cataclysm: 'Cataclysme'
+            };
+            
             // Show game over screen
+            document.getElementById('difficultyDisplay').textContent = difficultyNames[difficulty];
             document.getElementById('finalScore').textContent = score;
             document.getElementById('accuracy').textContent = accuracy + '%';
             document.getElementById('bestCombo').textContent = bestCombo;
@@ -522,6 +536,5 @@
             document.getElementById('startScreen').style.display = 'flex';
         }
     </script>
-    <script src="accessibility.js"></script>
 </body>
 </html>
