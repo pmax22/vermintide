@@ -44,6 +44,10 @@
         .player-dot.completed { border-color: transparent; }
         .seed-output { margin-top: var(--space-lg); padding: var(--space-md); background: rgba(0, 0, 0, 0.3); border: 1px solid var(--gold-dark); display: none; }
         .seed-output textarea { width: 100%; margin-bottom: var(--space-md); font-family: monospace; }
+        .individual-seed-item { margin-bottom: var(--space-md); padding: var(--space-sm); background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-subtle); }
+        .individual-seed-item h4 { font-family: 'Cinzel', serif; color: var(--gold-primary); margin-bottom: var(--space-sm); font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+        .individual-seed-item textarea { width: 100%; padding: 8px; font-family: monospace; font-size: 0.85rem; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-subtle); color: var(--text-primary); min-height: 50px; resize: vertical; }
+        .individual-seed-item button { margin-top: 6px; }
         @media (max-width: 768px) {
             .container { padding-top: 20px; }
             .players-section { grid-template-columns: 1fr; }
@@ -78,14 +82,13 @@
             </div>
             <div class="action-buttons">
                 <button class="btn" onclick="addPlayer()">+ Ajouter Joueur</button>
-                <button class="btn btn-primary" onclick="generateGroupSeed()">📋 Générer Seed Groupe</button>
+                <button class="btn" onclick="exportIndividualSeeds()">💾 Exporter Seeds Individuelles</button>
                 <button class="btn btn-danger" onclick="clearAll()">Tout effacer</button>
             </div>
             <div id="message"></div>
-            <div class="seed-output" id="seedOutput">
-                <label>Seed du groupe:</label>
-                <textarea id="groupSeedText" readonly></textarea>
-                <button class="btn" onclick="copySeedToClipboard()">📋 Copier</button>
+            <div class="seed-output" id="individualSeedsOutput" style="display: none;">
+                <label>Seeds individuelles (état actuel):</label>
+                <div id="individualSeedsContainer"></div>
             </div>
         </div>
         <div class="legend" id="legend" style="display: none;">
@@ -176,12 +179,25 @@
             }
         }
         function addPlayer() {
-            playerCount++;
-            const colorIndex = (playerCount - 1) % playerColors.length;
+            // Check if we already have 4 players
+            const existingPlayers = Array.from(document.querySelectorAll('.player-card'));
+            if (existingPlayers.length >= 4) {
+                showMessage('Maximum 4 joueurs (limite du jeu)', 'error');
+                return;
+            }
+            
+            // Find the next available player number
+            const existingPlayerNums = existingPlayers.map(card => parseInt(card.dataset.player));
+            let nextPlayerNum = 1;
+            while (existingPlayerNums.includes(nextPlayerNum)) {
+                nextPlayerNum++;
+            }
+            
+            const colorIndex = (nextPlayerNum - 1) % playerColors.length;
             const newCard = document.createElement('div');
             newCard.className = 'player-card';
-            newCard.dataset.player = playerCount;
-            newCard.innerHTML = `<h3><span><span class="player-indicator" style="background: ${playerColors[colorIndex]};"></span>Joueur ${playerCount}</span><button class="remove-btn" onclick="removePlayer(${playerCount})">✕</button></h3><input type="text" class="player-name" placeholder="Nom du joueur"><textarea class="player-seed" placeholder="Collez la seed ici..."></textarea><button class="btn" style="margin-top: 10px; width: 100%;" onclick="loadPlayerSeed(${playerCount})">Charger</button>`;
+            newCard.dataset.player = nextPlayerNum;
+            newCard.innerHTML = `<h3><span><span class="player-indicator" style="background: ${playerColors[colorIndex]};"></span>Joueur ${nextPlayerNum}</span><button class="remove-btn" onclick="removePlayer(${nextPlayerNum})">✕</button></h3><input type="text" class="player-name" placeholder="Nom du joueur"><textarea class="player-seed" placeholder="Collez la seed ici..."></textarea><button class="btn" style="margin-top: 10px; width: 100%;" onclick="loadPlayerSeed(${nextPlayerNum})">Charger</button>`;
             document.getElementById('playersSection').appendChild(newCard);
         }
         function removePlayer(playerNum) {
@@ -258,33 +274,52 @@
             const percentage = ((totalCompleted / total) * 100).toFixed(1);
             document.getElementById('progress').innerHTML = `<strong>Progression commune:</strong> ${totalCompleted}/${total} complétées par tous (${percentage}%)<br><strong>${totalMissing}</strong> maps/héros restent à compléter en groupe`;
         }
-        function generateGroupSeed() {
-            const activePlayers = Object.keys(playerData);
-            if (activePlayers.length === 0) { showMessage('Aucune donnée à générer.', 'error'); return; }
-            const mergedData = {};
-            allMapsList.forEach(map => { heroes.forEach(hero => { const key = `${map}_${hero}`; activePlayers.forEach(playerNum => { if (playerData[playerNum].data[key] === 1) mergedData[key] = 1; }); }); });
-            const seed = encodeCompactSeed(mergedData);
-            document.getElementById('groupSeedText').value = seed;
-            document.getElementById('seedOutput').style.display = 'block';
-            showMessage('Seed du groupe générée!', 'success');
-        }
-        function copySeedToClipboard() {
-            const textarea = document.getElementById('groupSeedText');
-            textarea.select();
-            document.execCommand('copy');
-            showMessage('Seed copiée!', 'success');
-        }
         function clearAll() {
             if (confirm('Tout effacer?')) {
                 playerData = {};
                 document.querySelectorAll('.player-seed').forEach(ta => ta.value = '');
                 document.querySelectorAll('.player-name').forEach(inp => inp.value = '');
-                document.getElementById('seedOutput').style.display = 'none';
+                document.getElementById('individualSeedsOutput').style.display = 'none';
                 createTable();
                 document.getElementById('legend').style.display = 'none';
                 document.getElementById('progress').textContent = '';
                 showMessage('Données effacées.', 'success');
             }
+        }
+        function exportIndividualSeeds() {
+            const activePlayers = Object.keys(playerData);
+            if (activePlayers.length === 0) {
+                showMessage('Aucune donnée à exporter.', 'error');
+                return;
+            }
+            const container = document.getElementById('individualSeedsContainer');
+            container.innerHTML = '';
+            activePlayers.forEach(playerNum => {
+                const player = playerData[playerNum];
+                const seed = encodeCompactSeed(player.data);
+                const playerColor = playerColors[(parseInt(playerNum) - 1) % playerColors.length];
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'individual-seed-item';
+                itemDiv.innerHTML = `
+                    <h4>
+                        <span class="player-indicator" style="background: ${playerColor};"></span>
+                        ${player.name}
+                    </h4>
+                    <textarea readonly id="playerSeed${playerNum}">${seed}</textarea>
+                    <button class="btn" onclick="copyPlayerSeed(${playerNum})">📋 Copier</button>
+                `;
+                container.appendChild(itemDiv);
+            });
+            document.getElementById('individualSeedsOutput').style.display = 'block';
+            showMessage('Seeds individuelles générées!', 'success');
+        }
+        function copyPlayerSeed(playerNum) {
+            const textarea = document.getElementById(`playerSeed${playerNum}`);
+            textarea.select();
+            document.execCommand('copy');
+            const playerName = playerData[playerNum].name;
+            showMessage(`Seed de ${playerName} copiée!`, 'success');
         }
         function showMessage(text, type) {
             const messageDiv = document.getElementById('message');
