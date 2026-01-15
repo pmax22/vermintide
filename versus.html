@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vermintide Versus - Suivi XP</title>
+    <link rel="stylesheet" href="shared-styles.css">
+    <style>
+        /* ═══════════════════════════════════════════════════════════════
+           VERSUS XP TRACKER - SPECIFIC STYLES
+           ═══════════════════════════════════════════════════════════════ */
+
+        .container {
+            padding-top: 80px;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '⚔';
+            display: block;
+            font-size: 2.5rem;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-md);
+            text-shadow: 0 0 20px rgba(201, 169, 97, 0.5);
+        }
+
+        .page-header h1 {
+            background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold-primary) 50%, var(--gold-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Input Section */
+        .input-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .player-card {
+            background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border: 2px solid var(--gold-dark);
+            padding: var(--space-lg);
+            position: relative;
+        }
+
+        .player-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+        }
+
+        .player-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-md);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .player-card-header h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--gold-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .player-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .remove-player {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            background: rgba(139, 26, 26, 0.2);
+            border: 1px solid var(--blood-primary);
+            color: var(--blood-bright);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all var(--transition-normal);
+        }
+
+        .remove-player:hover {
+            background: rgba(139, 26, 26, 0.4);
+        }
+
+        .input-group {
+            margin-bottom: var(--space-md);
+        }
+
+        /* Add Player Card */
+        .add-player-card {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-style: dashed;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .add-player-card:hover {
+            background: rgba(201, 169, 97, 0.1);
+            border-color: var(--gold-primary);
+        }
+
+        .add-player-card .add-icon {
+            font-size: 3rem;
+            color: var(--gold-muted);
+            margin-bottom: var(--space-md);
+            transition: all var(--transition-normal);
+        }
+
+        .add-player-card:hover .add-icon {
+            color: var(--gold-primary);
+            transform: scale(1.1);
+        }
+
+        .add-player-card .add-text {
+            font-family: 'Cinzel', serif;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Double XP Toggle */
+        .double-xp-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-md);
+            padding: var(--space-lg);
+            background: linear-gradient(145deg, rgba(255, 107, 53, 0.1) 0%, rgba(139, 26, 26, 0.1) 100%);
+            border: 1px solid var(--fire-orange);
+            margin-bottom: var(--space-xl);
+        }
+
+        .double-xp-toggle label {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--fire-orange);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            cursor: pointer;
+            margin: 0;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border-subtle);
+            padding: var(--space-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--gold-primary) 0%, var(--fire-orange) 100%);
+        }
+
+        .stat-card h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            color: var(--gold-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-sm);
+        }
+
+        .stat-value {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-light);
+            line-height: 1.2;
+        }
+
+        .stat-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: var(--space-xs);
+        }
+
+        .time-estimate {
+            margin-top: var(--space-md);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .time-estimate h4 {
+            margin-bottom: var(--space-sm);
+        }
+
+        .time-estimate .value {
+            font-size: 1.3rem;
+            color: var(--fire-orange);
+            font-weight: 600;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border-subtle);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .comparison-section h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .comparison-section h2::before {
+            content: '📊';
+        }
+
+        .player-progress {
+            margin-bottom: var(--space-lg);
+        }
+
+        .player-progress strong {
+            display: block;
+            margin-bottom: var(--space-sm);
+            color: var(--text-light);
+        }
+
+        /* XP Table */
+        .table-container {
+            background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border-subtle);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .table-container table {
+            width: 100%;
+        }
+
+        .table-container tr.highlight {
+            background: linear-gradient(90deg, rgba(255, 107, 53, 0.2) 0%, rgba(201, 169, 97, 0.1) 100%);
+        }
+
+        .table-container tr.highlight td {
+            color: var(--gold-primary);
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding-top: 20px;
+            }
+
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">Retour</a>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Versus XP Tracker</h1>
+            <p class="subtitle">Suivez votre progression vers le niveau 250</p>
+        </header>
+
+        <div class="input-section" id="playerInputs">
+            <div class="player-card" data-player="1">
+                <div class="player-card-header">
+                    <h3>
+                        <span class="player-indicator" style="background: #ff6b35;"></span>
+                        Joueur 1
+                    </h3>
+                </div>
+                <div class="input-group">
+                    <label>Nom (optionnel)</label>
+                    <input type="text" class="player-name" placeholder="Pseudo du joueur">
+                </div>
+                <div class="input-group">
+                    <label>Niveau actuel</label>
+                    <input type="number" class="player-level" min="0" max="250" value="0">
+                </div>
+            </div>
+
+            <div class="player-card add-player-card" id="addPlayerCard">
+                <div class="add-icon">+</div>
+                <div class="add-text">Ajouter un joueur</div>
+            </div>
+        </div>
+
+        <div class="double-xp-toggle">
+            <input type="checkbox" id="doubleXP">
+            <label for="doubleXP">🔥 Double XP Actif</label>
+        </div>
+
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="comparison-section" id="comparisonSection"></div>
+
+        <div class="table-container">
+            <table id="xpTable">
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const xpPerLevel = [0, 1500, 1501, 1503, 1506, 1509, 1513, 1518, 1523, 1529, 1536, 1543, 1551, 1560, 1569, 1579, 1590, 1601, 1613, 1626, 1639, 1653, 1668, 1683, 1699, 1716, 1733, 1751, 1770, 1789, 1809, 1830, 1851, 1873, 1896, 1919, 1943, 1968, 1993, 2019, 2046, 2073, 2101, 2130, 2159, 2189, 2220, 2251, 2283, 2316, 2349, 2383, 2418, 2453, 2489, 2526, 2563, 2601, 2640, 2679, 2719, 2760, 2801, 2843, 2886, 2929, 2973, 3018, 3063, 3109, 3156, 3203, 3251, 3300, 3349, 3399, 3450, 3501, 3553, 3606, 3659, 3713, 3768, 3823, 3879, 3936, 3993, 4051, 4110, 4169, 4229, 4290, 4351, 4413, 4476, 4539, 4603, 4668, 4733, 4799, 4866, 4933, 5001, 5070, 5139, 5209, 5280, 5351, 5423, 5496, 5569, 5643, 5718, 5793, 5869, 5946, 6023, 6101, 6180, 6259, 6339, 6420, 6501, 6583, 6666, 6749, 6833, 6918, 7003, 7089, 7176, 7263, 7351, 7440, 7529, 7619, 7710, 7801, 7893, 7986, 8079, 8173, 8268, 8363, 8459, 8556, 8653, 8751, 8850, 8949, 9049, 9150, 9251, 9353, 9456, 9559, 9663, 9768, 9873, 9979, 10086, 10193, 10301, 10410, 10519, 10629, 10740, 10851, 10963, 11076, 11189, 11303, 11418, 11533, 11649, 11766, 11883, 12001, 12120, 12239, 12359, 12480, 12601, 12723, 12846, 12969, 13093, 13218, 13343, 13469, 13596, 13723, 13851, 13980, 14109, 14239, 14370, 14501, 14633, 14766, 14899, 15033, 15168, 15303, 15439, 15576, 15713, 15851, 15990, 16129, 16269, 16410, 16551, 16693, 16836, 16979, 17123, 17268, 17413, 17559, 17706, 17853, 18001, 18150, 18299, 18449, 18600, 18751, 18903, 19056, 19209, 19363, 19518, 19673, 19829, 19986, 20143, 20301, 20460, 20619, 20779, 20940, 21101, 21263, 21426, 21589, 21753, 21918, 22083, 22249];
+
+        const playerColors = ['#ff6b35', '#4CAF50', '#2196F3', '#9C27B0', '#FF9800', '#00BCD4'];
+
+        const cumulativeXP = [];
+        let total = 0;
+        for (let xp of xpPerLevel) {
+            cumulativeXP.push(total);
+            total += xp;
+        }
+        const totalXP = total;
+
+        let playerCount = 1;
+
+        function calculatePlayerStats(level, currentXP, isDoubleXP) {
+            const cumulative = cumulativeXP[level] + currentXP;
+            const percentage = (cumulative / totalXP * 100).toFixed(2);
+            const xpRemaining = totalXP - cumulative;
+            const xpPerGame = isDoubleXP ? 2000 : 1000;
+            const gamesNeeded = Math.ceil(xpRemaining / xpPerGame);
+            const minutesNeeded = gamesNeeded * 20;
+            const hoursNeeded = Math.floor(minutesNeeded / 60);
+            const remainingMinutes = minutesNeeded % 60;
+            const daysNeeded = Math.floor(hoursNeeded / 24);
+            const remainingHours = hoursNeeded % 24;
+
+            return {
+                cumulative,
+                percentage,
+                xpToNextLevel: level < 250 ? xpPerLevel[level + 1] - currentXP : 0,
+                xpRemaining,
+                gamesNeeded,
+                timeString: daysNeeded > 0
+                    ? `${daysNeeded}j ${remainingHours}h ${remainingMinutes}min`
+                    : `${hoursNeeded}h ${remainingMinutes}min`
+            };
+        }
+
+        function getAllPlayers() {
+            const players = [];
+            const cards = document.querySelectorAll('.player-card[data-player]');
+            cards.forEach(card => {
+                const playerNum = card.dataset.player;
+                const name = card.querySelector('.player-name').value || `Joueur ${playerNum}`;
+                const level = parseInt(card.querySelector('.player-level').value) || 0;
+                players.push({ name, level, playerNum });
+            });
+            return players;
+        }
+
+        function updateDisplay() {
+            const isDoubleXP = document.getElementById('doubleXP').checked;
+            const players = getAllPlayers();
+
+            // Stats cards
+            let statsHTML = '';
+            players.forEach(player => {
+                const stats = calculatePlayerStats(player.level, 0, isDoubleXP);
+                statsHTML += `
+                    <div class="stat-card">
+                        <h4>${player.name}</h4>
+                        <div class="stat-value">${stats.cumulative.toLocaleString()} XP</div>
+                        <div class="stat-subtitle">${stats.percentage}% du total</div>
+                        <div class="time-estimate">
+                            <h4>🎮 Pour atteindre le niveau 250</h4>
+                            <div class="value">${stats.gamesNeeded.toLocaleString()} parties</div>
+                            <div style="margin-top: 5px;">⏱️ ${stats.timeString}</div>
+                            <div class="stat-subtitle">${stats.xpRemaining.toLocaleString()} XP restants</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            statsHTML += `
+                <div class="stat-card">
+                    <h4>XP Total (Niveau 250)</h4>
+                    <div class="stat-value">${totalXP.toLocaleString()} XP</div>
+                    <div class="stat-subtitle">Objectif final</div>
+                </div>
+            `;
+
+            if (players.length > 1) {
+                const stats = players.map(p => calculatePlayerStats(p.level, 0, isDoubleXP));
+                const maxXP = Math.max(...stats.map(s => s.cumulative));
+                const minXP = Math.min(...stats.map(s => s.cumulative));
+                const diff = maxXP - minXP;
+                const leader = players[stats.findIndex(s => s.cumulative === maxXP)];
+
+                statsHTML += `
+                    <div class="stat-card">
+                        <h4>Différence</h4>
+                        <div class="stat-value">${diff.toLocaleString()} XP</div>
+                        <div class="stat-subtitle">${leader.name} en avance</div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('statsGrid').innerHTML = statsHTML;
+
+            // Comparison section
+            let compHTML = '<h2>Comparaison de Progression</h2>';
+            players.forEach(player => {
+                const stats = calculatePlayerStats(player.level, 0, isDoubleXP);
+                compHTML += `
+                    <div class="player-progress">
+                        <strong>${player.name} — Niveau ${player.level}</strong>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${stats.percentage}%">${stats.percentage}%</div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('comparisonSection').innerHTML = compHTML;
+
+            // Table
+            let tableHTML = '';
+            for (let i = 0; i <= 250; i++) {
+                const playersAtLevel = players.filter(p => p.level === i);
+                const highlight = playersAtLevel.length > 0 ? 'highlight' : '';
+                let levelLabel = `Niveau ${i}`;
+
+                if (playersAtLevel.length > 0) {
+                    const names = playersAtLevel.map(p => p.name).join(' & ');
+                    levelLabel += ` (${names})`;
+                }
+
+                tableHTML += `
+                    <tr class="${highlight}">
+                        <td style="padding: 15px; font-weight: ${playersAtLevel.length > 0 ? 'bold' : 'normal'};">${levelLabel} — ${cumulativeXP[i].toLocaleString()} XP cumulés (${(cumulativeXP[i] / totalXP * 100).toFixed(2)}%)</td>
+                    </tr>
+                `;
+            }
+            document.getElementById('tableBody').innerHTML = tableHTML;
+        }
+
+        function addPlayer() {
+            playerCount++;
+            const colorIndex = (playerCount - 1) % playerColors.length;
+            const newCard = document.createElement('div');
+            newCard.className = 'player-card';
+            newCard.dataset.player = playerCount;
+            newCard.innerHTML = `
+                <div class="player-card-header">
+                    <h3>
+                        <span class="player-indicator" style="background: ${playerColors[colorIndex]};"></span>
+                        Joueur ${playerCount}
+                    </h3>
+                    <button class="remove-player" onclick="removePlayer(${playerCount})">✕ Retirer</button>
+                </div>
+                <div class="input-group">
+                    <label>Nom (optionnel)</label>
+                    <input type="text" class="player-name" placeholder="Pseudo du joueur ${playerCount}">
+                </div>
+                <div class="input-group">
+                    <label>Niveau actuel</label>
+                    <input type="number" class="player-level" min="0" max="250" value="0">
+                </div>
+            `;
+
+            const addCard = document.getElementById('addPlayerCard');
+            document.getElementById('playerInputs').insertBefore(newCard, addCard);
+
+            newCard.querySelector('.player-name').addEventListener('input', updateDisplay);
+            newCard.querySelector('.player-level').addEventListener('input', updateDisplay);
+
+            updateDisplay();
+        }
+
+        function removePlayer(playerNum) {
+            const card = document.querySelector(`.player-card[data-player="${playerNum}"]`);
+            if (card) {
+                card.remove();
+                updateDisplay();
+            }
+        }
+
+        // Event listeners
+        document.getElementById('addPlayerCard').addEventListener('click', addPlayer);
+        document.getElementById('doubleXP').addEventListener('change', updateDisplay);
+        document.querySelector('.player-card[data-player="1"] .player-name').addEventListener('input', updateDisplay);
+        document.querySelector('.player-card[data-player="1"] .player-level').addEventListener('input', updateDisplay);
+
+        updateDisplay();
+    </script>
+</body>
+</html>
