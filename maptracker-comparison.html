@@ -38,8 +38,8 @@
         td:first-child { font-weight: 600; padding-left: 20px; color: var(--text-light); text-align: left; cursor: default; }
         tr:hover { background: rgba(201, 169, 97, 0.05); }
         .cell-content { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .player-dots { display: flex; gap: 4px; justify-content: center; }
-        .player-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid; cursor: pointer; transition: all var(--transition-fast); }
+        .player-dots { display: flex; gap: 6px; justify-content: center; }
+        .player-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid; cursor: pointer; transition: all var(--transition-fast); }
         .player-dot:hover { transform: scale(1.3); }
         .player-dot.completed { border-color: transparent; }
         .seed-output { margin-top: var(--space-lg); padding: var(--space-md); background: rgba(0, 0, 0, 0.3); border: 1px solid var(--gold-dark); display: none; }
@@ -114,7 +114,7 @@
             "Back to Ubersreik": ["The Horn of Magnus", "Garden of Morr", "Engines of War"],
             "Winds of Magic": ["Dark Omens"]
         };
-        const heroes = ["Markus", "Bardin", "Kerillian", "Victor", "Sienna"];
+        const heroes = ["Markus", "Bardin", "Kerillian", "Viktor", "Sienna"];
         const playerColors = ['#ff6b35', '#4CAF50', '#2196F3', '#9C27B0', '#FF9800', '#00BCD4'];
         const allMapsList = Object.values(maps).flat();
         let playerData = {};
