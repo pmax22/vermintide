@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vermintide 2 - Guide des Weaves Saison 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Eczar:wght@400;500;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1612;
+            --bg-card: #231e1a;
+            --border-gold: #c9a961;
+            --text-primary: #e8e3d8;
+            --text-secondary: #b8a88d;
+            --accent-red: #8b1a1a;
+            --accent-gold: #d4af37;
+            --shadow-dark: rgba(0, 0, 0, 0.8);
+            
+            /* Wind colors */
+            --light: #f0e68c;
+            --celestial: #4169e1;
+            --jade: #2e8b57;
+            --amber: #ff8c00;
+            --grey: #708090;
+            --amethyst: #9370db;
+            --bright: #dc143c;
+            --gold: #ffd700;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1612 50%, #0f0d0b 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(201, 169, 97, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(139, 26, 26, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 40px 20px 20px 20px;
+            position: relative;
+        }
+
+        header::before {
+            content: '⚔';
+            position: absolute;
+            left: 50%;
+            top: -20px;
+            transform: translateX(-50%);
+            font-size: 40px;
+            color: var(--accent-gold);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            text-shadow: 
+                0 0 10px rgba(212, 175, 55, 0.3),
+                0 4px 8px var(--shadow-dark);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(212, 175, 55, 0.3), 0 4px 8px var(--shadow-dark); }
+            to { text-shadow: 0 0 20px rgba(212, 175, 55, 0.6), 0 4px 8px var(--shadow-dark); }
+        }
+
+        .subtitle {
+            font-family: 'Eczar', serif;
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+
+        .info-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 24px var(--shadow-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+
+        .info-section h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            background: rgba(35, 30, 26, 0.6);
+            border: 1px solid rgba(201, 169, 97, 0.3);
+            border-radius: 6px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-gold);
+            box-shadow: 0 4px 12px rgba(201, 169, 97, 0.2);
+        }
+
+        .info-card h3 {
+            font-family: 'Eczar', serif;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-card li {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .info-card li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+        }
+
+        .wind-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .wind-light { background: var(--light); color: #000; }
+        .wind-celestial { background: var(--celestial); color: #fff; }
+        .wind-jade { background: var(--jade); color: #fff; }
+        .wind-amber { background: var(--amber); color: #000; }
+        .wind-grey { background: var(--grey); color: #fff; }
+        .wind-amethyst { background: var(--amethyst); color: #fff; }
+        .wind-bright { background: var(--bright); color: #fff; }
+        .wind-gold { background: var(--gold); color: #000; }
+
+        .wind-description {
+            margin-top: 10px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 3px solid var(--accent-gold);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .wind-description strong {
+            color: var(--accent-gold);
+        }
+
+        .search-section {
+            margin-bottom: 40px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 18px 24px;
+            font-size: 1.3rem;
+            font-family: 'Eczar', serif;
+            background: var(--bg-card);
+            border: 2px solid var(--border-gold);
+            border-radius: 8px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow-dark);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .search-bar::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .weave-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-gold);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 24px var(--shadow-dark);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weave-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--accent-gold);
+        }
+
+        .weave-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 12px 32px rgba(212, 175, 55, 0.2);
+        }
+
+        .weave-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .weave-title {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .weave-number {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            line-height: 1;
+            text-shadow: 0 2px 4px var(--shadow-dark);
+        }
+
+        .weave-name {
+            font-family: 'Eczar', serif;
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-top: 5px;
+            font-weight: 700;
+        }
+
+        .weave-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .meta-badge {
+            padding: 8px 16px;
+            background: rgba(35, 30, 26, 0.8);
+            border: 1px solid rgba(201, 169, 97, 0.5);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .difficulty-badge {
+            font-size: 1.1rem;
+            padding: 10px 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .diff-recruit { background: #4a7c4e; color: #fff; }
+        .diff-veteran { background: #5b7c9e; color: #fff; }
+        .diff-champion { background: #9e6b4e; color: #fff; }
+        .diff-legend { background: #9e4e4e; color: #fff; }
+        .diff-cataclysm { background: #7e2d2d; color: #fff; }
+        .diff-cataclysm2 { background: #5e1d1d; color: #fff; }
+        .diff-cataclysm3 { background: #3e0d0d; color: #fff; }
+
+        .weave-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .detail-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-gold);
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .spawns-section {
+            background: rgba(139, 26, 26, 0.1);
+            border: 1px solid rgba(139, 26, 26, 0.3);
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .spawns-section h4 {
+            font-family: 'Eczar', serif;
+            font-size: 1.3rem;
+            color: var(--accent-red);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .spawn-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .spawn-list li {
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 3px solid var(--accent-red);
+            border-radius: 4px;
+            font-size: 1.05rem;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .spawn-list li::before {
+            content: '☠';
+            position: absolute;
+            left: 10px;
+            color: var(--accent-red);
+        }
+
+        .tip-section {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .tip-section h4 {
+            font-family: 'Eczar', serif;
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .tip-section p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+            border-top: 1px solid var(--border-gold);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .weave-header {
+                flex-direction: column;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.3rem;
+            color: var(--accent-gold);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(212, 175, 55, 0.2);
+            border: 2px solid var(--border-gold);
+            color: var(--accent-gold);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-family: 'Eczar', serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px var(--shadow-dark);
+        }
+
+        .back-button:hover {
+            background: rgba(212, 175, 55, 0.4);
+            transform: translateX(-5px);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .collapsible-header {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .collapsible-header:hover {
+            color: #fff;
+        }
+
+        .collapse-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+            color: var(--accent-gold);
+        }
+
+        .collapse-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .collapsible-content {
+            max-height: 2000px;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        .collapsible-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .search-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            text-align: center;
+            margin-bottom: 15px;
+            margin-top: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px var(--shadow-dark);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" style="position: fixed; top: 20px; left: 20px; font-family: Cinzel, serif; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 12px 20px; background: rgba(12, 10, 8, 0.9); border: 2px solid #7a6235; color: #c9a961; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; z-index: 1000; transition: all 0.3s ease; backdrop-filter: blur(10px);" onmouseover="this.style.background='rgba(201, 169, 97, 0.15)';this.style.borderColor='#c9a961';this.style.transform='translateX(-5px)';" onmouseout="this.style.background='rgba(12, 10, 8, 0.9)';this.style.borderColor='#7a6235';this.style.transform='translateX(0)';">⚔ Retour</a>
+
+    <div class="container">
+        <header>
+            <h1>Weaves</h1>
+            <p class="subtitle">Saison 4 - Guide Complet</p>
+        </header>
+
+        <div class="info-section">
+            <h2 class="collapsible-header" onclick="toggleSection(this)">
+                <span>🌀 Les 8 Vents de Magie</span>
+                <span class="collapse-icon collapsed">▼</span>
+            </h2>
+            <div class="collapsible-content collapsed">
+                <div class="info-grid">
+                <div class="info-card">
+                    <h3><span class="wind-badge wind-light">🌪️ Light</span></h3>
+                    <div class="wind-description">
+                        <strong>Hysh's Purging:</strong> Tu gagnes des stacks de malédiction toutes les X secondes. Chaque stack réduit ton maximum de PV mais augmente ta vitesse d'attaque. Retire les stacks près des balises lumineuses.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3><span class="wind-badge wind-celestial">⚡ Celestial</span></h3>
+                    <div class="wind-description">
+                        <strong>Azyr's Stormsurge:</strong> Des cercles magiques apparaissent périodiquement. La foudre frappe après un délai, infligeant des dégâts à tous. Déplacement constant obligatoire.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3><span class="wind-badge wind-jade">🌿 Jade</span></h3>
+                    <div class="wind-description">
+                        <strong>Ghyran's Flourishing:</strong> Quand un ennemi meurt, des épines poussent à l'endroit de sa mort. Elles infligent des dégâts et ralentissent. Le terrain devient dangereux.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3><span class="wind-badge wind-amber">🐾 Amber</span></h3>
+                    <div class="wind-description">
+                        <strong>Ghur's Wrath:</strong> Des totems apparaissent. Les ennemis à proximité subissent 25% de dégâts en moins. Détruis les totems avant d'engager.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3><span class="wind-badge wind-grey">🌫️ Grey</span></h3>
+                    <div class="wind-description">
+                        <strong>Ulgu's Deception:</strong> Les ennemis lointains apparaissent sous forme de fumée et subissent moins de dégâts. Visibilité réduite.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3><span class="wind-badge wind-amethyst">👻 Amethyst</span></h3>
+                    <div class="wind-description">
+                        <strong>Shyish's Haunting:</strong> Les ennemis laissent une âme qui traque un joueur et explose au contact, convertissant des dégâts en vie temporaire.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3><span class="wind-badge wind-bright">🔥 Bright</span></h3>
+                    <div class="wind-description">
+                        <strong>Aqshy's Incineration:</strong> Toutes les attaques appliquent une brûlure qui inflige des dégâts sur la durée. Pression constante.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3><span class="wind-badge wind-gold">🛡️ Gold</span></h3>
+                    <div class="wind-description">
+                        <strong>Chamon's Aurification:</strong> Les ennemis armurés obtiennent de la super-armure. Tuer un ennemi armuré te donne une aura de dégâts et stagger.
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2 class="collapsible-header" onclick="toggleSection(this)">
+                <span>⚔️ Difficultés des Weaves</span>
+                <span class="collapse-icon collapsed">▼</span>
+            </h2>
+            <div class="collapsible-content collapsed">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Progression de Difficulté</h3>
+                        <ul>
+                        <li><span class="difficulty-badge diff-recruit">Recruit</span> Weaves 1-10</li>
+                        <li><span class="difficulty-badge diff-veteran">Veteran</span> Weaves 11-20</li>
+                        <li><span class="difficulty-badge diff-champion">Champion</span> Weaves 21-30</li>
+                        <li><span class="difficulty-badge diff-legend">Legend</span> Weaves 31-40</li>
+                        <li><span class="difficulty-badge diff-cataclysm">Cataclysm</span> Weaves 41-60</li>
+                        <li><span class="difficulty-badge diff-cataclysm2">Cataclysm 2</span> Weaves 61-80</li>
+                        <li><span class="difficulty-badge diff-cataclysm3">Cataclysm 3</span> Weaves 81-160</li>
+                    </ul>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2 class="collapsible-header" onclick="toggleSection(this)">
+                <span>🗺️ Localisations & Maps</span>
+                <span class="collapse-icon collapsed">▼</span>
+            </h2>
+            <div class="collapsible-content collapsed">
+                <div class="info-grid">
+                <div class="info-card">
+                    <h3>Maps de Phase 1</h3>
+                    <ul>
+                        <li><strong>Bastion</strong> → Festering Ground</li>
+                        <li><strong>Pastorale</strong> → Against the Grain</li>
+                        <li><strong>Ruins</strong> → Empire of Flames</li>
+                        <li><strong>Canyon</strong> → Festering Ground</li>
+                        <li><strong>Delving</strong> → Hunger in the Dark</li>
+                        <li><strong>Waters</strong> → Fort Brachsenbruke</li>
+                        <li><strong>Mire</strong> → War Camp</li>
+                        <li><strong>Weald</strong> → Engines of War</li>
+                        <li><strong>Warrens</strong> → Blightreaper</li>
+                        <li><strong>Oubliette</strong> → The Pit</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>Maps d'Event Final (Phase 2)</h3>
+                    <ul>
+                        <li>Colosseum Plateau</li>
+                        <li>Athel Yenlui</li>
+                        <li>Castle Drachenfels</li>
+                    </ul>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <h3 class="search-title">🔍 Rechercher une Weave</h3>
+        
+        <div class="search-section">
+            <input 
+                type="text" 
+                id="searchBar" 
+                class="search-bar" 
+                placeholder="🔍 Rechercher une weave par numéro, nom, vent ou difficulté..."
+            >
+        </div>
+
+        <div id="weavesContainer">
+            <div class="loading">Chargement des weaves...</div>
+        </div>
+
+        <footer>
+            <p>Vermintide 2 - Weaves Saison 4 | Guide créé pour la communauté</p>
+        </footer>
+    </div>
+
+    <script>
+        // Fonction pour toggle les sections
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.collapse-icon');
+            
+            content.classList.toggle('collapsed');
+            icon.classList.toggle('collapsed');
+        }
+
+        // Données des weaves
+        const weavesData = [
+            {
+                numbers: [1, 41, 81, 121],
+                name: "Light Bastion",
+                wind: "Light",
+                map: "Festering Ground",
+                eventMap: "Colosseum Plateau",
+                objective: "Slaughter",
+                spawns: {
+                    1: ["Bile Troll + Bestigor"],
+                    41: ["3 Boss (Its either 2 Chaos Spawn + Rat Ogre or the other way around) + 5 Bestigor + Horde"]
+                },
+                tips: "Have one person grab aggro. Lure it to the ledge then stagger with BW/GK ult."
+            },
+            {
+                numbers: [2, 42, 82, 122],
+                name: "Celestial Pastorale",
+                wind: "Celestial",
+                map: "Against the Grain",
+                eventMap: "Athel Yenlui",
+                objective: "Slaughter",
+                spawns: {
+                    2: ["Stormfiend + Flamer + Gunner + Monk"],
+                    42: ["Stormfiend + Flamer + Gunner + 5 Monk"]
+                }
+            },
+            {
+                numbers: [3, 43, 83, 123],
+                name: "Jade Ruins",
+                wind: "Jade",
+                map: "Empire of Flames",
+                eventMap: "Castle Drachenfels",
+                objective: "Drain Essence Fractures",
+                spawns: {
+                    3: [
+                        "Hook + 2 Bestigor",
+                        "Hook + Wargor + Horde + Archers",
+                        "2 Wargors + 2 Bestigor + Horde",
+                        "Hook + Wargor + Bestigor + Horde",
+                        "Hook + Bestigor + Minotaur"
+                    ],
+                    43: [
+                        "Hook + 6 Bestigor",
+                        "Hook + Wargor + Horde + Archers",
+                        "2 Wargors + 8 Bestigor + Horde",
+                        "Hook + Wargor + 3 Bestigor Horde",
+                        "Hook + 8 Bestigor + Minotaur"
+                    ]
+                }
+            },
+            {
+                numbers: [4, 44, 84, 124],
+                name: "Gold Canyon",
+                wind: "Gold",
+                map: "Festering Ground",
+                eventMap: "Colosseum Plateau",
+                objective: "Slaughter",
+                spawns: {
+                    4: [
+                        "2 Chaos Warrior",
+                        "2 Savage + 7 Bestigor",
+                        "Chaos Warrior + Bestigor + Stormfiend"
+                    ],
+                    44: [
+                        "13 Chaos Warrior + 6 Savage",
+                        "6 Savage + 24 Bestigor",
+                        "7 Chaos Warrior + 6 Bestigor + Stormfiend"
+                    ]
+                },
+                tips: "Stormfiend spawns at beginning and halfway of the map."
+            },
+            {
+                numbers: [5, 45, 85, 125],
+                name: "Bright Delving #1",
+                wind: "Bright",
+                map: "Hunger in the Dark",
+                eventMap: "Colosseum Plateau",
+                objective: "Drain Essence Fractures",
+                spawns: {
+                    5: [
+                        "Horde",
+                        "Bile Troll + Leech",
+                        "Rat Ogre + Hook + Flamer + Horde"
+                    ],
+                    45: [
+                        "Horde + Hook",
+                        "Bile Troll + Leech + Horde",
+                        "Rat Ogre + Hook +Flamer + Horde"
+                    ]
+                }
+            },
+            {
+                numbers: [6, 46, 86, 126],
+                name: "Amber Pastorale",
+                wind: "Amber",
+                map: "Against the Grain",
+                eventMap: "Athel Yenlui",
+                objective: "Slaughter",
+                spawns: {
+                    6: [
+                        "Horde",
+                        "Minotaur + Horde + Bestigor + Archers",
+                        "Minotaur + Horde + Bestigor + Archers"
+                    ],
+                    46: [
+                        "Wargor + Horde",
+                        "Minotaur + Bestigor + Horde + Archers",
+                        "Minotaur + Wargor + 3 Bestigor + Horde + Archers"
+                    ]
+                }
+            },
+            {
+                numbers: [7, 47, 87, 127],
+                name: "Grey Waters",
+                wind: "Grey",
+                map: "Fort Brachsenbruke",
+                eventMap: "Colosseum Plateau",
+                objective: "Blow Up Essence Node",
+                spawns: {
+                    7: [
+                        "Horde + Flamer",
+                        "Stormfiend + Gunner + Monk + Horde"
+                    ],
+                    47: [
+                        "Horde + Flamer",
+                        "Stormfiend + Gunner + 5 Monk + Horde"
+                    ]
+                },
+                tips: "Touching 2nd Barrel will spawn Chaos Spawn. Must ledge to save time."
+            },
+            {
+                numbers: [8, 48, 88, 128],
+                name: "Amethyst Mire",
+                wind: "Amethyst",
+                map: "War Camp",
+                eventMap: "Athel Yenlui",
+                objective: "Slaughter",
+                spawns: {
+                    8: [
+                        "Chaos Warrior + Stormer",
+                        "Stormer + Leech + Horde",
+                        "2 Stormer + Leech + 5 Savage + Horde",
+                        "Stormer + Leech + Savage + Horde",
+                        "Stormer + Leech + 3 Savage + 2 Chaos Warrior + Horde",
+                        "Stormer + 2 Savage + Horde + Chaos Spawn"
+                    ],
+                    48: [
+                        "6 Chaos Warrior + Stormer",
+                        "Stormer + Leech + Horde",
+                        "2 Stormer + Leech + 15 Savage + Horde",
+                        "Stormer + Leech + 4 Savage + Horde",
+                        "Stormer + Leech + Savage + 12 Chaos Warrior + Horde",
+                        "Stormer + 8 Savage + Horde + Chaos Spawn"
+                    ]
+                },
+                tips: "Rat Ogre spawns halfway of the 1st map."
+            },
+            {
+                numbers: [9, 49, 89, 129],
+                name: "Light Weald",
+                wind: "Light",
+                map: "Engines of War",
+                eventMap: "Colosseum Plateau",
+                objective: "Drain Essence Fractures",
+                spawns: {
+                    9: [
+                        "Hook + Horde",
+                        "Bile Troll + Horde",
+                        "Rat Ogre + Hook + Flamer + Horde"
+                    ],
+                    49: [
+                        "Hook + Horde",
+                        "Bile Troll + Leech + Horde",
+                        "Rat Ogre + Hook + Flamer + Horde"
+                    ]
+                },
+                tips: "Stormfiend at 2nd Circle. Minotaur at 3rd Circle."
+            },
+            {
+                numbers: [10, 50, 90, 130],
+                name: "Celestial Warrens",
+                wind: "Celestial",
+                map: "Blightreaper",
+                eventMap: "Castle Drachenfels",
+                objective: "Slaughter",
+                spawns: {
+                    10: [
+                        "2 Flamer + 2 Gunner + Archers",
+                        "Gas + 2 Stormvermin + Stormfiend",
+                        "4 Flamer + 2 Stormvermin + Horde",
+                        "2 Wargors + 2 Gas + 2 Gunner + Horde + Archer",
+                        "Assassin + Leech + Stormer + Bile Troll"
+                    ],
+                    50: [
+                        "2 Flamer + 2 Gunner + Archers",
+                        "Gas + 8 Stormvermin + Stormfiend",
+                        "4 Flamer + 14 Stormvermin + Horde",
+                        "2 Wargors + 2 Gas + 2 Gunner + Horde + Archer",
+                        "Assassin + Leech + Stormer + Bile Troll"
+                    ]
+                },
+                tips: "Chaos Spawn at start of the map."
+            },
+            {
+                numbers: [11, 51, 91, 131],
+                name: "Jade Mire",
+                wind: "Jade",
+                map: "War Camp",
+                eventMap: "Athel Yenlui",
+                objective: "Slaughter",
+                spawns: {
+                    11: [
+                        "2 Gunner + 2 Chaos Warrior + Horde",
+                        "4 Gunner + 6 Chaos Warrior + Horde",
+                        "Horde",
+                        "Gunner + Hook + 2 Chaos Warrior + Horde",
+                        "2 Gunner + 4 Chaos Warrior + Horde"
+                    ],
+                    51: [
+                        "2 Gunner + 7 Chaos Warrior + Horde",
+                        "5 Gunner + 18 Chaos Warrior",
+                        "Horde",
+                        "Chaos Warrior + Horde",
+                        "Gunner + Hook + 7 Chaos Warrior + Horde",
+                        "2 Gunner + 12 Chaos Warrior + Horde"
+                    ]
+                }
+            },
+            {
+                numbers: [12, 52, 92, 132],
+                name: "Gold Ruins",
+                wind: "Gold",
+                map: "Empire of Flames",
+                eventMap: "Colosseum Plateau",
+                objective: "Shatter Essence Chunks",
+                spawns: {
+                    12: [
+                        "Stormer + 2 Chaos Warrior",
+                        "2 Stormer + Leech + Horde",
+                        "Stormer + Leech + 4 Savage",
+                        "Stormer + Leech + 3 Savage + 4 Chaos Warrior",
+                        "Stormer + 3 Savage + Chaos Spawn"
+                    ],
+                    52: [
+                        "Stormer + 7 Chaos Warrior",
+                        "Stormer + Leech + Horde",
+                        "2 Stormer + Leech + 17 Savage + Horde",
+                        "Stormer + Leech + 8 Savage",
+                        "Stormer +Leech + 12 Savage + 11 Chaos Warrior",
+                        "Stormer + 8 Savage + Chaos Spawn"
+                    ]
+                }
+            },
+            {
+                numbers: [13, 53, 93, 133],
+                name: "Bright Mire",
+                wind: "Bright",
+                map: "War Camp",
+                eventMap: "Castle Drachenfels",
+                objective: "Slaughter",
+                spawns: {
+                    13: ["Chaos Spawn + Rat Ogre"],
+                    53: ["2 Chaos Spawn + Rat Ogre"]
+                }
+            },
+            {
+                numbers: [14, 54, 94, 134],
+                name: "Amber Bastion",
+                wind: "Amber",
+                map: "Festering Ground",
+                eventMap: "Colosseum Plateau",
+                objective: "Drain Essence Fractures",
+                spawns: {
+                    14: ["Minotaur + 8 Bestigor + Horde + Archers"],
+                    54: ["2 Minotaur's + 24 Bestigor + Horde + Archers"]
+                },
+                tips: "Break all totems then ledge 2 Minotaur at start of end event map. Have Battle Wizard with either speed or strength potion with concoction. Have one person grab aggro. Let it charge or lure it to the ledge dodge then stagger with BW/GK ult."
+            },
+            {
+                numbers: [15, 55, 95, 135],
+                name: "Grey Oubliette",
+                wind: "Grey",
+                map: "The Pit",
+                eventMap: "Athel Yenlui",
+                objective: "Slaughter",
+                spawns: {
+                    15: [
+                        "2 Leech + Stormer + 4 Savage + 5 Chaos Warrior",
+                        "2 Leech + Stormer + 4 Savage + 3 Chaos Warrior",
+                        "Stormer + 3 Savage + 1 Chaos Warrior"
+                    ],
+                    55: [
+                        "2 Leech + Stormer + 8 Savage + 2 Mauler + 14 Chaos Warrior",
+                        "Leech + Stormer + 8 Savage + 2 Mauler + 7 Chaos Warrior",
+                        "Stormer + 8 Savage + 2 Mauler + 2 Chaos Warrior"
+                    ]
+                },
+                tips: "Rotate at arena. Don't huddle in one spot. There's way too many Chaos Warriors + Stormer & Leech."
+            },
+            {
+                numbers: [16, 56, 96, 136],
+                name: "Amethyst Ruins",
+                wind: "Amethyst",
+                map: "Empire of Flames",
+                eventMap: "Castle Drachenfels",
+                objective: "Blow Up Essence Node",
+                spawns: {
+                    16: [
+                        "2 Gunner + 2 Chaos Warrior",
+                        "2 Gunner + 4 Chaos Warrior",
+                        "3 Gunner + 2 Chaos Warrior",
+                        "Horde",
+                        "Hook + Gunner + 2 Chaos Warrior",
+                        "2 Gunner + 4 Chaos Warrior + Horde"
+                    ],
+                    56: [
+                        "2 Gunner + 6 Chaos Warrior",
+                        "2 Gunner + 12 Chaos Warrior",
+                        "3 Gunner + 6 Chaos Warrior",
+                        "Horde",
+                        "Hook + Gunner + 7 Chaos Warrior",
+                        "2 Gunner + 11 Chaos Warrior"
+                    ]
+                },
+                tips: "1st Barrel Stormfiend. 2nd Barrel Chaos Spawn."
+            },
+            {
+                numbers: [17, 57, 97, 137],
+                name: "Light Canyon",
+                wind: "Light",
+                map: "Festering Ground",
+                eventMap: "Athel Yenlui",
+                objective: "Slaughter",
+                spawns: {
+                    17: [
+                        "2 Leech + Stormer + Archers",
+                        "Chaos Spawn + 3 Stormer + Gas + Wargor + 2 Bestigor + Archers"
+                    ],
+                    57: [
+                        "2 Leech + 2 Stormer + Archers",
+                        "Chaos Spawn + 3 Stormer + Gas + Wargor + 2 Bestigor + Archers"
+                    ]
+                },
+                tips: "Bile Troll spawns at halfway of the 1st Map."
+            },
+            {
+                numbers: [18, 58, 98, 138],
+                name: "Celestial Oubliette",
+                wind: "Celestial",
+                map: "The Pit",
+                eventMap: "Colosseum Plateau",
+                objective: "Shatter Essence Chunks",
+                spawns: {
+                    18: [
+                        "Hook + 2 Bestigor + Archers",
+                        "Hook + Wargor + Horde + Archers",
+                        "2 Wargors + 4 Bestigor + Horde",
+                        "Horde",
+                        "Hook + Wargor + 2 Bestigor + Horde",
+                        "Hook + 4 Bestigor + Horde",
+                        "Horde + Minotaur"
+                    ],
+                    58: [
+                        "Hook + 6 Bestigor + Archers",
+                        "Hook + Wargor + Horde + Archers",
+                        "2 Wargors + 6 Bestigor + Horde",
+                        "Horde",
+                        "Hook + Wargor + 4 Bestigor + Horde",
+                        "Hook + 10 Bestigor + Horde",
+                        "Horde + Minotaur"
+                    ]
+                },
+                tips: "Bile Troll spawns at start, halfway and the end of the 1st map."
+            },
+            {
+                numbers: [19, 59, 99, 139],
+                name: "Jade Bastion",
+                wind: "Jade",
+                map: "Festering Ground",
+                eventMap: "Castle Drachenfels",
+                objective: "Slaughter",
+                spawns: {
+                    19: ["Chaos Spawn + Rat Ogre"],
+                    59: ["2 Chaos Spawn + Rat Ogre"]
+                }
+            },
+            {
+                numbers: [20, 60, 100, 140],
+                name: "Gold Pastorale",
+                wind: "Gold",
+                map: "Against the Grain",
+                eventMap: "Colosseum Plateau",
+                objective: "Drain Essence Fractures",
+                spawns: {
+                    20: [
+                        "2 Flamer + Gunner + Horde",
+                        "4 Stormvermin + Horde",
+                        "2 Flamer + 2 Gunner + Horde"
+                    ],
+                    60: [
+                        "2 Flamer + 2 Gunner + Horde",
+                        "16 Stormvermin + Horde",
+                        "2 Flamer + 2 Gunner + 4 Stormvermin + Horde"
+                    ]
+                },
+                tips: "Stormfiend before 1st circle. Once it's triggered everyone must head to the ledge near the starting point. Must ledge to save time. Camp the house before 1st circle and have HM trigger come back then kill rinse and repeat. Bile Troll before 2nd circle. Rat Ogre after 2nd circle. 3rd Circle spawns Minotaur. Chaos Spawn before windmill. HM can run to the portal with Conc/Speed + Decanter. Even with 1 min (+5min) left there is enough time for the end event."
+            },
+            {
+                numbers: [21, 61, 101, 141],
+                name: "Bright Weald",
+                wind: "Bright",
+                map: "Engines of War",
+                eventMap: "Castle Drachenfels",
+                objective: "Slaughter",
+                spawns: {
+                    21: [
+                        "3 Hook + Horde",
+                        "Rat Ogre + Horde",
+                        "Stormfiend +2 Assassin + Horde"
+                    ],
+                    61: [
+                        "5 Hook + Horde",
+                        "Rat Ogre + Horde",
+                        "Stormfiend + 5 Assassin + Horde"
+                    ]
+                }
+            },
+            {
+                numbers: [22, 62, 102, 142],
+                name: "Amber Warrens",
+                wind: "Amber",
+                map: "Blightreaper",
+                eventMap: "Athel Yenlui",
+                objective: "Destroy Essence Shards",
+                spawns: {
+                    22: [
+                        "Assassin + Horde",
+                        "2 Assassin + Gas + 5 Stormvermin + Horde",
+                        "2 Assassin + Gas + 6 Stormvermin + Horde",
+                        "2 Assassin + 6 Monk + Horde",
+                        "3 Assassin + 6 Stormvermin + Horde",
+                        "2 Assassin + 5 Monk + Horde + Stormfiend"
+                    ],
+                    62: [
+                        "Assassin + Horde",
+                        "2 Assassin + Gas + 12 Stormvermin + Horde",
+                        "2 Assassin + Gas + 12 Stormvermin + Horde",
+                        "2 Assassin + 9 Monk + Horde",
+                        "4 Assassin + 12 Stormvermin + Horde",
+                        "2 Assassin + 9 Monk + Horde + Stormfiend"
+                    ]
+                }
+            },
+            {
+                numbers: [23, 63, 103, 143],
+                name: "Grey Canyon",
+                wind: "Grey",
+                map: "Festering Ground",
+                eventMap: "Athel Yenlui",
+                objective: "Shatter Essence Chunks",
+                spawns: {
+                    23: [
+                        "Hook + 4 Bestigor + Archers",
+                        "Hook + Wargor + Horde + Archers",
+                        "2 Wargors + 4 Bestigor + Horde",
+                        "Horde",
+                        "Hook + Wargor + 2 Bestigor + Horde",
+                        "Hook + 5 Bestigor + Horde",
+                        "2 Wargor + 4 Bestigor",
+                        "Wargor + Horde + Archers + Minotaur"
+                    ],
+                    63: [
+                        "Hook + 6 Bestigor + Archers",
+                        "Hook + Wargor + Horde + Archers",
+                        "2 Wargors + 6 Bestigor + Horde",
+                        "Horde",
+                        "Hook + Wargor + 4 Bestigor + Horde",
+                        "Hook + 9 Bestigor + Horde",
+                        "2 Wargor + 7 Bestigor + Horde",
+                        "Wargor + Horde + Archers + Minotaur"
+                    ]
+                }
+            },
+            {
+                numbers: [24, 64, 104, 144],
+                name: "Amethyst Bastion",
+                wind: "Amethyst",
+                map: "Festering Ground",
+                eventMap: "Castle Drachenfels",
+                objective: "Blow Up Essence Node",
+                spawns: {
+                    24: [
+                        "Stormer + Chaos Warrior + Horde",
+                        "Stormer + Leech + Horde",
+                        "2 Stormer + Leech + 9 Savage + Horde",
+                        "Stormer + Leech + 4 Savage",
+                        "Stormer + Leech + 5 Savage + 5 Chaos Warrior + Horde",
+                        "Stormer + 4 Savage + Horde + Chaos Spawn"
+                    ],
+                    64: [
+                        "Stormer + 6 Chaos Warrior + Horde",
+                        "Stormer + Leech + Horde",
+                        "2 Stormer + Leech + 16 Savage + Horde",
+                        "Stormer + Leech + 4 Savage",
+                        "Stormer + Leech + 8 Savage + 11 Chaos Warrior + Horde",
+                        "Stormer + 8 Savage + Horde + Chaos Spawn"
+                    ]
+                },
+                tips: "Chaos Spawn at barrel explosion."
+            },
+            {
+                numbers: [25, 65, 105, 145],
+                name: "Light Oubliette #1",
+                wind: "Light",
+                map: "The Pit",
+                eventMap: "Colosseum Plateau",
+                objective: "Drain Essence Fractures",
+                spawns: {
+                    25: ["Minotaurs + 3 Bestigor + Horde + Archers"],
+                    65: ["3 Minotaurs + 5 Bestigor + Horde + Archers"]
+                },
+                tips: "Must ledge Minotaurs. Have one person grab aggro. Let it charge to the ledge dodge then stagger with BW/GK ult."
+            },
+            {
+                numbers: [26, 66, 106, 146],
+                name: "Celestial Delving",
+                wind: "Celestial",
+                map: "Hunger in the Dark",
+                eventMap: "Athel Yenlui",
+                objective: "Slaughter",
+                spawns: {
+                    26: [
+                        "Leech + Horde",
+                        "Bile Troll + Leech + Horde",
+                        "Chaos Spawn + 9 Mauler + 2 Leech"
+                    ],
+                    66: [
+                        "Leech + Horde",
+                        "Bile Troll + Leech + Horde",
+                        "Chaos Spawn + 22 Mauler + 2 Leech"
+                    ]
+                }
+            },
+            {
+                numbers: [27, 67, 107, 147],
+                name: "Jade Waters",
+                wind: "Jade",
+                map: "Fort Brachsenbruke",
+                eventMap: "Colosseum Plateau",
+                objective: "Shatter Essence Chunks",
+                spawns: {
+                    27: [
+                        "Assassin + Horde",
+                        "2 Assassin + Gas + 6 Stormvermin + Horde",
+                        "2 Assassin + Gas + 6 Stormvermin + Horde",
+                        "2 Assassin + 4 Monk + Horde",
+                        "3 Assassin + 6 Stormvermin + Horde",
+                        "2 Assassin + 6 Monk + Horde + Stormfiend"
+                    ],
+                    67: [
+                        "Assassin + Horde",
+                        "2 Assassin + Gas + 11 Stormvermin + Horde",
+                        "2 Assassin + Gas + 12 Stormvermin + Horde",
+                        "2 Assassin + 8 Monk + Horde",
+                        "3 Assassin + 12 Stormvermin + Horde",
+                        "2 Assassin + 9 Monk + Horde + Stormfiend"
+                    ]
+                },
+                tips: "2nd Essence Chunk spawns Minotaur. Must ledge to save time."
+            },
+            {
+                numbers: [28, 68, 108, 148],
+                name: "Gold Delving",
+                wind: "Gold",
+                map: "Hunger in the Dark",
+                eventMap: "Castle Drachenfels",
+                objective: "Destroy Essence Shards",
+                spawns: {
+                    28: [
+                        "Hook + Horde",
+                        "Assassin + Hook + Flamer + 3 Stormvermin + Horde",
+                        "2 Flamer + Gas + 12 Stormvermin + Horde",
+                        "Gunner + Hook + 2 Stormvermin + Horde",
+                        "2 Hook + Assassin + 2 Monk + 2 Stormvermin",
+                        "Flamer + Horde + Stormfiend"
+                    ],
+                    68: [
+                        "Hook + Horde",
+                        "Assassin + Hook + Flamer + 8 Stormvermin + Horde",
+                        "2 Flamer + Gas + 28 Stormvermin + Horde",
+                        "Gunner + Hook + 6 Stormvermin + Horde",
+                        "2 Hook + Assassin + 5 Monk + 6 Stormvermin",
+                        "Flamer + Horde + Stormfiend"
+                    ]
+                },
+                tips: "1st Bile Troll spawns at start. 2nd Bile Troll spawns halfway. 3rd Bile Troll spawns at the end of 1st map."
+            },
+            {
+                numbers: [29, 69, 109, 149],
+                name: "Bright Warrens",
+                wind: "Bright",
+                map: "Blightreaper",
+                eventMap: "Colosseum Plateau",
+                objective: "Blow Up Essence Node",
+                spawns: {
+                    29: [
+                        "2 Leech + Stormer + 2 Mauler + 5 Savage + 9 Chaos Warrior",
+                        "Leech + Stormer + Mauler + 4 Savage + 3 Chaos Warrior",
+                        "Stormer + 2 Mauler + 4 Savage + Chaos Warrior"
+                    ],
+                    69: [
+                        "2 Stormer + Leech + 2 Mauler + 8 Savage + 14 Chaos Warrior",
+                        "2 Leech + Stormer + 2 Mauler + 9 Savage + 6 Chaos Warrior",
+                        "Stormer + 2 Mauler + 9 Savage + 2 Chaos Warrior"
+                    ]
+                },
+                tips: "1st Barrel spawns Rat Ogre. Must ledge to save time. 2nd Barrel spawns Stormfiend. Must ignore to save time."
+            },
+            {
+                numbers: [30, 70, 110, 150],
+                name: "Amber Ruins",
+                wind: "Amber",
+                map: "Empire of Flames",
+                eventMap: "Athel Yenlui",
+                objective: "Destroy Essence Shards",
+                spawns: {
+                    30: [
+                        "Hook + 4 Bestigor + Horde + Archers",
+                        "Hook + Wargor + Horde + Archers",
+                        "2 Wargor + 4 Bestigor + Horde",
+                        "Horde",
+                        "Wargor + Hook + 1 Bestigor + Horde",
+                        "Hook + 6 Bestigor + Horde",
+                        "Horde + Minotaur"
+                    ],
+                    70: [
+                        "Hook + 6 Bestigor + Horde + Archers",
+                        "Hook + Wargor + Horde + Archers",
+                        "2 Wargor + 7 Bestigor + Horde",
+                        "Horde",
+                        "Wargor + Hook + 4 Bestigor + Horde",
+                        "Hook + 8 Bestigor + Horde",
+                        "Horde + Minotaur"
+                    ]
+                },
+                tips: "1st Shard spawns Rat Ogre. Minotaur spawns after starting area. Second Rat Ogre spawns before 2nd Shard. 2nd Minotaur spawns after breaking 3rd Shard. 3rd Minotaur spawns after 4th Shard. 5th Shard spawns Stormfiend. Portal located near 1st Grim of Empire of Flames."
+            },
+            {
+                numbers: [31, 71, 111, 151],
+                name: "Grey Pastorale",
+                wind: "Grey",
+                map: "Against the Grain",
+                eventMap: "Colosseum Plateau",
+                objective: "Shatter Essence Chunks",
+                spawns: {
+                    31: [
+                        "Flamer + Horde",
+                        "Gunner + 3 Monk + Horde + Stormfiend"
+                    ],
+                    71: [
+                        "Flamer + Horde",
+                        "Gunner + 5 Monk + Horde + Stormfiend"
+                    ]
+                },
+                tips: "Stormfiend spawns after 1st Big Oak tree."
+            },
+            {
+                numbers: [32, 72, 112, 152],
+                name: "Amethyst Delving",
+                wind: "Amethyst",
+                map: "Hunger in the Dark",
+                eventMap: "Castle Drachenfels",
+                objective: "Slaughter",
+                spawns: {
+                    32: [
+                        "Stormer + 5 Chaos Warrior",
+                        "Leech + Stormer + Horde",
+                        "2 Stormer + Leech + 11 Savage",
+                        "Horde",
+                        "Leech + Stormer + 5 Savage + Horde",
+                        "Leech + Stormer + 5 Savage + 7 Chaos Warrior + Horde",
+                        "Stormer + 6 Savage + Horde + Chaos Spawn"
+                    ],
+                    72: [
+                        "Stormer + 7 Chaos Warrior",
+                        "Leech + Stormer + Horde",
+                        "2 Stormer + Leech + 18 Savage",
+                        "Horde",
+                        "Leech + Stormer + 8 Savage + Horde",
+                        "Leech + Stormer + 9 Savage + 12 Chaos Warrior + Horde",
+                        "Stormer + 9 Savage + Horde + Chaos Spawn"
+                    ]
+                },
+                tips: "Bile Troll spawns after the start of the 1st Map"
+            },
+            {
+                numbers: [33, 73, 113, 153],
+                name: "Light Oubliette #2",
+                wind: "Light",
+                map: "The Pit",
+                eventMap: "Athel Yenlui",
+                objective: "Destroy Essence Shards",
+                spawns: {
+                    33: [
+                        "Assassin + Horde",
+                        "2 Assassin + Hook + 8 Stormvermin + Horde",
+                        "2 Assassin + Gas + 8 Stormvermin + Horde",
+                        "2 Assassin + 6 Monk + Horde",
+                        "3 Assassin + 8 Stormvermin + Horde",
+                        "2 Assassin + 6 Monk + Horde + Stormfiend"
+                    ],
+                    73: [
+                        "Assassin + Horde",
+                        "2 Assassin + Hook + 11 Stormvermin + Horde",
+                        "2 Assassin + Hook + 11 Stormvermin + Horde",
+                        "2 Assassin + 9 Monk + Horde",
+                        "3 Assassin + 12 Stormvermin + Horde",
+                        "Assassin + 9 Monk + Horde + Stormfiend"
+                    ]
+                }
+            },
+            {
+                numbers: [34, 74, 114, 154],
+                name: "Celestial Mire",
+                wind: "Celestial",
+                map: "War Camp",
+                eventMap: "Colosseum Plateau",
+                objective: "Drain Essence Fractures",
+                spawns: {
+                    34: [
+                        "Hook + Horde",
+                        "Flamer + Assassin + Hook + 4 Stormvermin",
+                        "2 Flamer + Gas + 12 Stormvermin",
+                        "Hook + Gunner + 2 Stormvermin",
+                        "2 Hook + Assassin + 3 Monk + 3 Stormvermin",
+                        "Flamer + Stormfiend + Horde"
+                    ],
+                    74: [
+                        "Hook + Horde",
+                        "Hook + Horde",
+                        "1 Flamer + Assassin + Hook + 8 Stormvermin",
+                        "2 Flamer + Gas + 28 Stormvermin",
+                        "Hook + Gunner + 6 Stormvermin",
+                        "2 Hook + Assassin + 5 Monk + 6 Stormvermin",
+                        "Flamer + Stormfiend + Horde"
+                    ]
+                }
+            },
+            {
+                numbers: [35, 75, 115, 155],
+                name: "Jade Canyon",
+                wind: "Jade",
+                map: "Festering Ground",
+                eventMap: "Athel Yenlui",
+                objective: "Blow Up Essence Node",
+                spawns: {
+                    35: ["2 Rat Ogre + Chaos Spawn"],
+                    75: ["2 Chaos Spawn + Rat Ogre"]
+                },
+                tips: "Not enough beastmen."
+            },
+            {
+                numbers: [36, 76, 116, 156],
+                name: "Gold Weald",
+                wind: "Gold",
+                map: "Engines of War",
+                eventMap: "Colosseum Plateau",
+                objective: "Destroy Essence Shards",
+                spawns: {
+                    36: [
+                        "10 Chaos Warrior + Horde",
+                        "Assassin + 14 Stormvermin",
+                        "Minotaur + 13 Bestigor + Archers"
+                    ],
+                    76: [
+                        "12 Chaos Warrior + Horde",
+                        "Assassin + 24 Stormvermin",
+                        "Minotaur + 18 Bestigor + Archers"
+                    ]
+                },
+                tips: "1st Rat Ogre spawns halfway. 2nd Rat Ogre spawns near Tower(1st Grim of Engines of War)."
+            },
+            {
+                numbers: [37, 77, 117, 157],
+                name: "Bright Delving #2",
+                wind: "Bright",
+                map: "Hunger in the Dark",
+                eventMap: "Castle Drachenfels",
+                objective: "Blow Up Essence Node",
+                spawns: {
+                    37: [
+                        "Stormer + 5 Chaos Warrior",
+                        "Stormer + Leech + Horde",
+                        "2 Stormer + Leech + 10 Savages",
+                        "Horde",
+                        "Stormer + Leech + 6 Savages",
+                        "Stormer + Leech + 6 Savages + 6 Chaos Warrior",
+                        "Stormer + Horde + 8 Savages + Chaos Spawn"
+                    ],
+                    77: [
+                        "Stormer + 7 Chaos Warrior",
+                        "Stormer + Leech + Horde",
+                        "2 Stormer + Leech + 18 Savages",
+                        "Horde",
+                        "Stormer + Leech + 9 Savages",
+                        "Stormer + Leech + 8 Savages + 10 Chaos Warrior",
+                        "Stormer + Horde + 8 Savages + Chaos Spawn"
+                    ]
+                },
+                tips: "1st Barrel spawns Rat Ogre. Second Rat Ogre spawns near 2nd Barrel. 2nd Barrel spawns Stormfiend. Portal at barrel area."
+            },
+            {
+                numbers: [38, 78, 118, 158],
+                name: "Amber Oubliette",
+                wind: "Amber",
+                map: "The Pit",
+                eventMap: "Colosseum Plateau",
+                objective: "Drain Essence Fractures",
+                spawns: {
+                    38: ["2 Rat Ogre + Minotaur"],
+                    78: ["2 Minotaur + Rat Ogre"]
+                },
+                tips: "Have one person grab aggro. Let it charge or lure it to the ledge dodge then stagger with BW/GK ult."
+            },
+            {
+                numbers: [39, 79, 119, 159],
+                name: "Grey Warrens",
+                wind: "Grey",
+                map: "Blightreaper",
+                eventMap: "Athel Yenlui",
+                objective: "Shatter Essence Chunks",
+                spawns: {
+                    39: [
+                        "Assassin + Horde",
+                        "2 Assassin + Gas + 9 Stormvermin + Horde",
+                        "2 Assassin + Gas + 8 Stormvermin + Horde",
+                        "2 Assassin + 7 Monk + Horde",
+                        "3 Assassin + 4 Stormvermin + Horde",
+                        "2 Assassin + 6 Monk + Horde + Stormfiend"
+                    ],
+                    79: [
+                        "Assassin + Horde",
+                        "2 Assassin + Gas + 12 Stormvermin + Horde",
+                        "2 Assassin + Gas + 12 Stormvermin + Horde",
+                        "2 Assassin + 9 Monk + Horde",
+                        "3 Assassin + 12 Stormvermin + Horde",
+                        "2 Assassin + 8 Monk + Horde + Stormfiend"
+                    ]
+                },
+                tips: "Rat Ogre spawns before the end of 1st Map. Huddle at the spot in Arena."
+            },
+            {
+                numbers: [40, 80, 120, 160],
+                name: "Amethyst Waters",
+                wind: "Amethyst",
+                map: "Fort Brachsenbruke",
+                eventMap: "Colosseum Plateau",
+                objective: "Slaughter",
+                spawns: {
+                    40: [
+                        "Flamer + Horde",
+                        "Stormfiend + Gunner + 3 Monk + Horde"
+                    ],
+                    80: [
+                        "Flamer + Horde",
+                        "Stormfiend + Gunner + 4 Monk + Horde"
+                    ]
+                },
+                tips: "Minotaur spawns before the end of 1st Map."
+            }
+        ];
+
+        // Fonction pour déterminer la difficulté
+        function getDifficulty(weaveNumber) {
+            if (weaveNumber >= 1 && weaveNumber <= 10) return { name: 'Recruit', class: 'diff-recruit' };
+            if (weaveNumber >= 11 && weaveNumber <= 20) return { name: 'Veteran', class: 'diff-veteran' };
+            if (weaveNumber >= 21 && weaveNumber <= 30) return { name: 'Champion', class: 'diff-champion' };
+            if (weaveNumber >= 31 && weaveNumber <= 40) return { name: 'Legend', class: 'diff-legend' };
+            if (weaveNumber >= 41 && weaveNumber <= 60) return { name: 'Cataclysm', class: 'diff-cataclysm' };
+            if (weaveNumber >= 61 && weaveNumber <= 80) return { name: 'Cataclysm 2', class: 'diff-cataclysm2' };
+            if (weaveNumber >= 81 && weaveNumber <= 160) return { name: 'Cataclysm 3', class: 'diff-cataclysm3' };
+            return { name: 'Unknown', class: '' };
+        }
+
+        // Fonction pour obtenir la classe CSS du vent
+        function getWindClass(wind) {
+            return 'wind-' + wind.toLowerCase();
+        }
+
+        // Créer les cartes de weaves
+        function createWeaveCards(data) {
+            const container = document.getElementById('weavesContainer');
+            container.innerHTML = '';
+
+            if (data.length === 0) {
+                container.innerHTML = '<div class="no-results">Aucune weave trouvée pour cette recherche.</div>';
+                return;
+            }
+
+            // Créer un tableau de toutes les weaves avec leurs numéros
+            const allWeaves = [];
+            data.forEach(weave => {
+                weave.numbers.forEach(weaveNumber => {
+                    allWeaves.push({
+                        weaveNumber: weaveNumber,
+                        weave: weave
+                    });
+                });
+            });
+
+            // Trier par numéro croissant
+            allWeaves.sort((a, b) => a.weaveNumber - b.weaveNumber);
+
+            // Créer les cartes dans l'ordre trié
+            allWeaves.forEach(item => {
+                const weaveNumber = item.weaveNumber;
+                const weave = item.weave;
+                
+                const card = document.createElement('div');
+                card.className = 'weave-card';
+                card.dataset.weaveNumber = weaveNumber;
+                card.dataset.weaveName = weave.name.toLowerCase();
+                card.dataset.weaveWind = weave.wind.toLowerCase();
+
+                const difficulty = getDifficulty(weaveNumber);
+                const spawnsForWeave = weave.spawns[weaveNumber] || weave.spawns[weave.numbers[weave.numbers.length > 1 ? 1 : 0]];
+
+                let spawnsHTML = '';
+                if (spawnsForWeave && spawnsForWeave.length > 0) {
+                    spawnsHTML = `
+                        <div class="spawns-section">
+                            <h4>☠ Spawns de l'Event Final</h4>
+                            <ul class="spawn-list">
+                                ${spawnsForWeave.map(spawn => `<li>${spawn}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                let tipsHTML = '';
+                if (weave.tips) {
+                    tipsHTML = `
+                        <div class="tip-section">
+                            <h4>💡 Astuce</h4>
+                            <p>${weave.tips}</p>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="weave-header">
+                        <div class="weave-title">
+                            <div class="weave-number">#${weaveNumber}</div>
+                            <div class="weave-name">${weave.name}</div>
+                        </div>
+                        <div class="weave-meta">
+                            <span class="wind-badge ${getWindClass(weave.wind)}">${weave.wind}</span>
+                            <span class="difficulty-badge ${difficulty.class}">${difficulty.name}</span>
+                        </div>
+                    </div>
+                    <div class="weave-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Map Phase 1</div>
+                            <div class="detail-value">${weave.map}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Event Final</div>
+                            <div class="detail-value">${weave.eventMap}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Objectif</div>
+                            <div class="detail-value">${weave.objective}</div>
+                        </div>
+                    </div>
+                    ${spawnsHTML}
+                    ${tipsHTML}
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Fonction de recherche
+        function searchWeaves() {
+            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+            const allCards = document.querySelectorAll('.weave-card');
+
+            let visibleCount = 0;
+            allCards.forEach(card => {
+                const weaveNumber = card.dataset.weaveNumber;
+                const weaveName = card.dataset.weaveName;
+                const weaveWind = card.dataset.weaveWind;
+                const difficulty = getDifficulty(parseInt(weaveNumber)).name.toLowerCase();
+
+                const matches = 
+                    weaveNumber.includes(searchTerm) ||
+                    weaveName.includes(searchTerm) ||
+                    weaveWind.includes(searchTerm) ||
+                    difficulty.includes(searchTerm);
+
+                if (matches) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (visibleCount === 0) {
+                document.getElementById('weavesContainer').innerHTML = 
+                    '<div class="no-results">Aucune weave trouvée pour cette recherche.</div>';
+            }
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            createWeaveCards(weavesData);
+            document.getElementById('searchBar').addEventListener('input', searchWeaves);
+        });
+    </script>
+</body>
+</html>

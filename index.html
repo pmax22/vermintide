@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outils pour Vermintide 2</title>
+    <link rel="stylesheet" href="shared-styles.css">
+    <style>
+        /* ═══════════════════════════════════════════════════════════════
+           INDEX PAGE - PORTAL ENTRANCE
+           ═══════════════════════════════════════════════════════════════ */
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: var(--space-lg);
+        }
+
+        .portal-container {
+            text-align: center;
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Main Title */
+        .main-title {
+            margin-bottom: var(--space-sm);
+            position: relative;
+        }
+
+        .main-title::before {
+            content: '☠';
+            display: block;
+            font-size: 3rem;
+            color: var(--gold-primary);
+            margin-bottom: var(--space-md);
+            text-shadow: 0 0 30px rgba(201, 169, 97, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .main-title h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold-primary) 40%, var(--gold-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8));
+            animation: glow-text 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow-text {
+            from { filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 20px rgba(201, 169, 97, 0.3)); }
+            to { filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 40px rgba(201, 169, 97, 0.6)); }
+        }
+
+        .subtitle {
+            font-family: 'IM Fell English', serif;
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: var(--space-md);
+            letter-spacing: 0.15em;
+        }
+
+        /* Decorative divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: var(--space-2xl) 0;
+            gap: var(--space-lg);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            max-width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold-dark), transparent);
+        }
+
+        .divider-icon {
+            font-size: 1.5rem;
+            color: var(--gold-primary);
+        }
+
+        /* Tool Grid */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-xl);
+            margin-top: var(--space-xl);
+        }
+
+        /* Tool Cards */
+        .tool-card {
+            background: linear-gradient(145deg, var(--bg-card) 0%, rgba(18, 16, 12, 0.9) 100%);
+            border: 2px solid var(--gold-dark);
+            padding: var(--space-2xl) var(--space-xl);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        .tool-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--fire-orange);
+            transition: width var(--transition-normal);
+        }
+
+        .tool-card:hover {
+            border-color: var(--gold-primary);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(201, 169, 97, 0.2),
+                inset 0 0 30px rgba(201, 169, 97, 0.05);
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        .tool-card:hover::after {
+            width: 60%;
+        }
+
+        .tool-card:hover .tool-icon {
+            transform: scale(1.1) rotate(5deg);
+            text-shadow: 0 0 30px currentColor;
+        }
+
+        /* Corner decorations */
+        .tool-card .corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gold-dark);
+            transition: border-color var(--transition-normal);
+        }
+
+        .tool-card:hover .corner {
+            border-color: var(--gold-primary);
+        }
+
+        .tool-card .corner-tl {
+            top: 8px;
+            left: 8px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .tool-card .corner-tr {
+            top: 8px;
+            right: 8px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .tool-card .corner-bl {
+            bottom: 8px;
+            left: 8px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .tool-card .corner-br {
+            bottom: 8px;
+            right: 8px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .tool-icon {
+            font-size: 4rem;
+            transition: all var(--transition-normal);
+            line-height: 1;
+        }
+
+        .tool-card:nth-child(1) .tool-icon { color: var(--gold-primary); }
+        .tool-card:nth-child(2) .tool-icon { color: var(--blood-bright); }
+        .tool-card:nth-child(3) .tool-icon { color: #9370db; }
+        .tool-card:nth-child(4) .tool-icon { color: var(--hero-kerillian); }
+        .tool-card:nth-child(5) .tool-icon { color: #ff8c00; }
+        .tool-card:nth-child(6) .tool-icon { color: #dc143c; }
+
+        .tool-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .tool-description {
+            font-family: 'IM Fell English', serif;
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Enter prompt */
+        .enter-prompt {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-top: var(--space-md);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all var(--transition-normal);
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            color: var(--gold-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .tool-card:hover .enter-prompt {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .enter-prompt::before,
+        .enter-prompt::after {
+            content: '—';
+            color: var(--gold-dark);
+        }
+
+        /* Footer */
+        .footer-note {
+            margin-top: var(--space-3xl);
+            font-family: 'IM Fell English', serif;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-lg);
+            }
+
+            .tool-card {
+                padding: var(--space-xl) var(--space-lg);
+            }
+
+            .tool-icon {
+                font-size: 3rem;
+            }
+
+            .main-title::before {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: var(--space-md);
+            }
+
+            .divider {
+                margin: var(--space-xl) 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="portal-container">
+        <header class="main-title">
+            <h1>Vermintide 2</h1>
+            <p class="subtitle">Outils de l'Ubersreik Five</p>
+        </header>
+
+        <div class="divider">
+            <span class="divider-icon">⚔</span>
+        </div>
+
+        <nav class="tool-grid">
+            <a href="maptracker.html" class="tool-card">
+                <span class="corner corner-tl"></span>
+                <span class="corner corner-tr"></span>
+                <span class="corner corner-bl"></span>
+                <span class="corner corner-br"></span>
+                <div class="tool-icon">🗺️</div>
+                <div class="tool-title">Map Tracker</div>
+                <div class="tool-description">Suivez votre progression héroïque à travers toutes les cartes</div>
+                <div class="enter-prompt">Entrer</div>
+            </a>
+
+            <a href="versus.html" class="tool-card">
+                <span class="corner corner-tl"></span>
+                <span class="corner corner-tr"></span>
+                <span class="corner corner-bl"></span>
+                <span class="corner corner-br"></span>
+                <div class="tool-icon">⚔️</div>
+                <div class="tool-title">Versus XP</div>
+                <div class="tool-description">Calculez votre progression vers la gloire du niveau 250</div>
+                <div class="enter-prompt">Entrer</div>
+            </a>
+
+            <a href="chaoswaste-weekly.html" class="tool-card">
+                <span class="corner corner-tl"></span>
+                <span class="corner corner-tr"></span>
+                <span class="corner corner-bl"></span>
+                <span class="corner corner-br"></span>
+                <div class="tool-icon">🌀</div>
+                <div class="tool-title">Chaos Wastes</div>
+                <div class="tool-description">Rotation hebdomadaire des skins Bitter Dreams</div>
+                <div class="enter-prompt">Entrer</div>
+            </a>
+
+            <a href="vermintide-weaves.html" class="tool-card">
+                <span class="corner corner-tl"></span>
+                <span class="corner corner-tr"></span>
+                <span class="corner corner-bl"></span>
+                <span class="corner corner-br"></span>
+                <div class="tool-icon">🌿</div>
+                <div class="tool-title">Guide Weaves</div>
+                <div class="tool-description">Maîtrisez les 160 Weaves de la Saison 4</div>
+                <div class="enter-prompt">Entrer</div>
+            </a>
+
+            <a href="https://www.ranalds.gift/" target="_blank" rel="noopener noreferrer" class="tool-card">
+                <span class="corner corner-tl"></span>
+                <span class="corner corner-tr"></span>
+                <span class="corner corner-bl"></span>
+                <span class="corner corner-br"></span>
+                <div class="tool-icon">🤞</div>
+                <div class="tool-title">Ranald's Gift</div>
+                <div class="tool-description">Créez ou consultez des builds optimisés</div>
+                <div class="enter-prompt">Ouvrir</div>
+            </a>
+
+            <a href="shoot-the-rat.html" class="tool-card">
+                <span class="corner corner-tl"></span>
+                <span class="corner corner-tr"></span>
+                <span class="corner corner-bl"></span>
+                <span class="corner corner-br"></span>
+                <div class="tool-icon">🐀</div>
+                <div class="tool-title">Shoot the Rat</div>
+                <div class="tool-description">Testez votre visée en éliminant un maximum de vermines</div>
+                <div class="enter-prompt">Jouer</div>
+            </a>
+        </nav>
+
+        <p class="footer-note">« La seule bonne vermine est une vermine morte. »</p>
+    </div>
+</body>
+</html>

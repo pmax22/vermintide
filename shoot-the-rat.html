@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoot the Rat - Vermintide 2</title>
+    <link rel="stylesheet" href="shared-styles.css">
+    <style>
+        body {
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1612 50%, #0f0d0b 100%);
+            overflow: hidden;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(201, 169, 97, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(139, 26, 26, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hud {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: var(--space-xl);
+            z-index: 1000;
+            background: linear-gradient(145deg, rgba(34, 28, 22, 0.95) 0%, rgba(26, 22, 18, 0.95) 100%);
+            padding: var(--space-lg) var(--space-2xl);
+            border: 2px solid var(--gold-dark);
+            backdrop-filter: blur(10px);
+        }
+
+        .hud-item {
+            text-align: center;
+        }
+
+        .hud-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-xs);
+        }
+
+        .hud-value {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            text-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+        }
+
+        .hud-value.time {
+            color: var(--blood-bright);
+        }
+
+        .rat {
+            position: absolute;
+            cursor: crosshair;
+            transition: transform 0.1s ease;
+            user-select: none;
+            pointer-events: auto;
+            z-index: 100;
+        }
+
+        .rat:hover {
+            transform: scale(1.1);
+        }
+
+        .rat:active {
+            transform: scale(0.9);
+        }
+
+        .start-screen,
+        .game-over-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            text-align: center;
+            padding: var(--space-xl);
+        }
+
+        .screen-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 6vw, 4rem);
+            background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold-primary) 50%, var(--gold-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--space-lg);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .screen-subtitle {
+            font-family: 'IM Fell English', serif;
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .game-stats {
+            background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border: 2px solid var(--gold-dark);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+            min-width: 300px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-sm) 0;
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-family: 'Crimson Text', serif;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .stat-value {
+            font-family: 'Cinzel', serif;
+            color: var(--gold-primary);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .btn-large {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            padding: var(--space-md) var(--space-2xl);
+            margin: var(--space-md);
+        }
+
+        .difficulty-selector {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .difficulty-btn {
+            font-family: 'Cinzel', serif;
+            padding: var(--space-md) var(--space-lg);
+            border: 2px solid var(--gold-dark);
+            background: rgba(34, 28, 22, 0.5);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .difficulty-btn.selected {
+            border-color: var(--gold-primary);
+            background: rgba(201, 169, 97, 0.2);
+            color: var(--gold-primary);
+        }
+
+        .difficulty-btn:hover {
+            border-color: var(--gold-primary);
+            transform: translateY(-2px);
+        }
+
+        .blood-splatter {
+            position: absolute;
+            pointer-events: none;
+            animation: splatter 0.5s ease-out forwards;
+            z-index: 50;
+        }
+
+        @keyframes splatter {
+            0% {
+                opacity: 1;
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1);
+            }
+        }
+
+        .combo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--blood-bright);
+            text-shadow: 0 0 20px var(--blood-bright);
+            pointer-events: none;
+            z-index: 999;
+            animation: comboPopup 0.6s ease-out forwards;
+        }
+
+        @keyframes comboPopup {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1) translateY(-50px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hud {
+                gap: var(--space-md);
+                padding: var(--space-md) var(--space-lg);
+            }
+
+            .hud-value {
+                font-size: 1.5rem;
+            }
+
+            .difficulty-selector {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">Retour</a>
+
+    <div class="game-container" id="gameContainer">
+        <!-- HUD -->
+        <div class="hud">
+            <div class="hud-item">
+                <div class="hud-label">Score</div>
+                <div class="hud-value" id="score">0</div>
+            </div>
+            <div class="hud-item">
+                <div class="hud-label">Temps</div>
+                <div class="hud-value time" id="timer">30</div>
+            </div>
+            <div class="hud-item">
+                <div class="hud-label">Record</div>
+                <div class="hud-value" id="highScore">0</div>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+        <div class="start-screen" id="startScreen">
+            <h1 class="screen-title">🐀 Shoot the Rat 🐀</h1>
+            <p class="screen-subtitle">« Éradiquez la vermine ! »</p>
+            <p class="screen-subtitle" style="color: var(--gold-primary); margin-top: -20px; margin-bottom: 30px;">Massacrez un maximum de rats en 30 secondes</p>
+            
+            <div class="difficulty-selector">
+                <button class="difficulty-btn" data-difficulty="easy">
+                    Recrue
+                </button>
+                <button class="difficulty-btn selected" data-difficulty="normal">
+                    Vétéran
+                </button>
+                <button class="difficulty-btn" data-difficulty="hard">
+                    Champion
+                </button>
+                <button class="difficulty-btn" data-difficulty="legend">
+                    Légende
+                </button>
+                <button class="difficulty-btn" data-difficulty="cataclysm">
+                    Cataclysme
+                </button>
+            </div>
+
+            <button class="btn btn-large btn-primary" onclick="startGame()">⚔️ Commencer la Chasse</button>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div class="game-over-screen" id="gameOverScreen" style="display: none;">
+            <h1 class="screen-title">Partie Terminée !</h1>
+            
+            <div class="game-stats">
+                <div class="stat-row">
+                    <span class="stat-label">Rats Tués</span>
+                    <span class="stat-value" id="finalScore">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Précision</span>
+                    <span class="stat-value" id="accuracy">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Meilleur Combo</span>
+                    <span class="stat-value" id="bestCombo">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Record Personnel</span>
+                    <span class="stat-value" id="personalBest">0</span>
+                </div>
+            </div>
+
+            <button class="btn btn-large btn-primary" onclick="restartGame()">🔄 Rejouer</button>
+            <button class="btn btn-large" onclick="backToMenu()">🏠 Menu</button>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let timeLeft = 30;
+        let gameActive = false;
+        let timerInterval;
+        let currentRat = null;
+        let clicks = 0;
+        let hits = 0;
+        let combo = 0;
+        let bestCombo = 0;
+        let difficulty = 'normal';
+        
+        const difficulties = {
+            easy: { size: 120, minDelay: 0, maxDelay: 0 },
+            normal: { size: 100, minDelay: 0, maxDelay: 0 },
+            hard: { size: 80, minDelay: 0, maxDelay: 0 },
+            legend: { size: 60, minDelay: 0, maxDelay: 0 },
+            cataclysm: { size: 40, minDelay: 0, maxDelay: 0 }
+        };
+
+        // Load high score
+        let highScore = parseInt(localStorage.getItem('ratShooterHighScore') || '0');
+        document.getElementById('highScore').textContent = highScore;
+
+        // Difficulty selection
+        document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                difficulty = this.dataset.difficulty;
+            });
+        });
+
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            score = 0;
+            timeLeft = 30;
+            clicks = 0;
+            hits = 0;
+            combo = 0;
+            bestCombo = 0;
+            gameActive = true;
+            
+            document.getElementById('score').textContent = score;
+            document.getElementById('timer').textContent = timeLeft;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+            
+            spawnRat();
+        }
+
+        function spawnRat() {
+            if (!gameActive) return;
+            
+            // Remove old rat
+            if (currentRat) {
+                currentRat.remove();
+            }
+            
+            const container = document.getElementById('gameContainer');
+            const rat = document.createElement('div');
+            rat.className = 'rat';
+            rat.innerHTML = '🐀';
+            
+            const config = difficulties[difficulty];
+            rat.style.fontSize = config.size + 'px';
+            
+            // Random position (avoid edges)
+            const margin = 100;
+            const maxX = window.innerWidth - config.size - margin;
+            const maxY = window.innerHeight - config.size - margin - 150; // -150 for HUD
+            
+            rat.style.left = (margin + Math.random() * maxX) + 'px';
+            rat.style.top = (150 + Math.random() * maxY) + 'px';
+            
+            rat.addEventListener('click', killRat);
+            
+            container.appendChild(rat);
+            currentRat = rat;
+        }
+
+        function killRat(e) {
+            if (!gameActive) return;
+            
+            e.stopPropagation();
+            
+            score++;
+            hits++;
+            combo++;
+            
+            if (combo > bestCombo) {
+                bestCombo = combo;
+            }
+            
+            document.getElementById('score').textContent = score;
+            
+            // Blood splatter effect
+            createBloodSplatter(e.clientX, e.clientY);
+            
+            // Show combo
+            if (combo >= 5 && combo % 5 === 0) {
+                showCombo(combo);
+            }
+            
+            // Remove rat
+            currentRat.remove();
+            currentRat = null;
+            
+            // Spawn next rat with delay
+            const config = difficulties[difficulty];
+            const delay = config.minDelay + Math.random() * (config.maxDelay - config.minDelay);
+            setTimeout(spawnRat, delay);
+        }
+
+        function createBloodSplatter(x, y) {
+            const splatter = document.createElement('div');
+            splatter.className = 'blood-splatter';
+            splatter.innerHTML = '💥';
+            splatter.style.left = x + 'px';
+            splatter.style.top = y + 'px';
+            splatter.style.fontSize = '2rem';
+            
+            document.getElementById('gameContainer').appendChild(splatter);
+            
+            setTimeout(() => splatter.remove(), 500);
+        }
+
+        function showCombo(comboCount) {
+            const comboEl = document.createElement('div');
+            comboEl.className = 'combo';
+            comboEl.textContent = `×${comboCount} COMBO!`;
+            
+            document.getElementById('gameContainer').appendChild(comboEl);
+            
+            setTimeout(() => comboEl.remove(), 600);
+        }
+
+        // Track misses
+        document.getElementById('gameContainer').addEventListener('click', function(e) {
+            if (gameActive && !e.target.classList.contains('rat')) {
+                clicks++;
+                combo = 0; // Reset combo on miss
+            }
+        });
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            
+            if (currentRat) {
+                currentRat.remove();
+            }
+            
+            // Calculate stats
+            const accuracy = clicks > 0 ? Math.round((hits / (hits + clicks)) * 100) : 0;
+            
+            // Update high score
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('ratShooterHighScore', highScore);
+                document.getElementById('highScore').textContent = highScore;
+            }
+            
+            // Show game over screen
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+            document.getElementById('bestCombo').textContent = bestCombo;
+            document.getElementById('personalBest').textContent = highScore;
+            document.getElementById('gameOverScreen').style.display = 'flex';
+        }
+
+        function restartGame() {
+            document.getElementById('gameOverScreen').style.display = 'none';
+            startGame();
+        }
+
+        function backToMenu() {
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'flex';
+        }
+    </script>
+    <script src="accessibility.js"></script>
+</body>
+</html>
