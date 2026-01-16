@@ -38,6 +38,11 @@
         .results-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-md); }
         .weapon-card { background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-subtle); padding: var(--space-lg); transition: all var(--transition-normal); }
         .weapon-card:hover { border-color: var(--gold-muted); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); }
+        .weapon-card.current-week-card { 
+            border: 2px solid #9370db; 
+            background: linear-gradient(145deg, rgba(147, 112, 219, 0.2) 0%, rgba(0, 0, 0, 0.3) 100%);
+            box-shadow: 0 0 20px rgba(147, 112, 219, 0.3);
+        }
         .weapon-card-content { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-md); }
         .weapon-info { flex: 1; }
         .weapon-type { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--text-light); margin: var(--space-sm) 0; }
@@ -74,7 +79,7 @@
                 <button class="hero-filter-btn" data-hero="Kruber">Kruber</button>
                 <button class="hero-filter-btn" data-hero="Bardin">Bardin</button>
                 <button class="hero-filter-btn" data-hero="Sienna">Sienna</button>
-                <button class="hero-filter-btn" data-hero="Saltzpyre">Saltzpyre</button>
+                <button class="hero-filter-btn" data-hero="Viktor">Viktor</button>
             </div>
             <div class="search-box">
                 <span class="search-icon">🔎</span>
@@ -92,37 +97,37 @@
             { index: 2, hero: "Kruber", weaponType: "Longbow", name: "Longbow of Bitter Dreams" },
             { index: 3, hero: "Bardin", weaponType: "Handgun", name: "Handgun of Bitter Dreams" },
             { index: 4, hero: "Sienna", weaponType: "Conflagration Staff", name: "Conflagration Staff of Bitter Dreams" },
-            { index: 5, hero: "Saltzpyre", weaponType: "Greatsword", name: "Greatsword of Bitter Dreams" },
+            { index: 5, hero: "Viktor", weaponType: "Greatsword", name: "Greatsword of Bitter Dreams" },
             { index: 6, hero: "Kerillian", weaponType: "Hagbane Shortbow", name: "Hagbane Bow of Bitter Dreams" },
             { index: 7, hero: "Kruber", weaponType: "Executioner Sword", name: "Executioner Sword of Bitter Dreams" },
             { index: 8, hero: "Bardin", weaponType: "1H Hammer", name: "Hammer of Bitter Dreams" },
             { index: 9, hero: "Sienna", weaponType: "Bolt Staff", name: "Bolt Staff of Bitter Dreams" },
-            { index: 10, hero: "Saltzpyre", weaponType: "Volley Crossbow", name: "Volley Crossbow of Bitter Dreams" },
+            { index: 10, hero: "Viktor", weaponType: "Volley Crossbow", name: "Volley Crossbow of Bitter Dreams" },
             { index: 11, hero: "Kerillian", weaponType: "Elven Spear", name: "Spear of Bitter Dreams" },
             { index: 12, hero: "Kruber", weaponType: "Blunderbuss", name: "Blunderbuss of Bitter Dreams" },
             { index: 13, hero: "Bardin", weaponType: "Axe + Shield", name: "Axe and Shield of Bitter Dreams" },
             { index: 14, hero: "Sienna", weaponType: "1H Mace", name: "Mace of Bitter Dreams" },
-            { index: 15, hero: "Saltzpyre", weaponType: "Brace of Pistols", name: "Pistols of Bitter Dreams" },
+            { index: 15, hero: "Viktor", weaponType: "Brace of Pistols", name: "Pistols of Bitter Dreams" },
             { index: 16, hero: "Kerillian", weaponType: "Volley Crossbow", name: "Volley Crossbow of Bitter Dreams" },
             { index: 17, hero: "Kruber", weaponType: "Repeating Handgun", name: "Repeating Handgun of Bitter Dreams" },
             { index: 18, hero: "Bardin", weaponType: "War Pick", name: "War Pick of Bitter Dreams" },
             { index: 19, hero: "Sienna", weaponType: "Flame Sword", name: "Flame Sword of Bitter Dreams" },
-            { index: 20, hero: "Saltzpyre", weaponType: "1H Axe", name: "Axe of Bitter Dreams" },
+            { index: 20, hero: "Viktor", weaponType: "1H Axe", name: "Axe of Bitter Dreams" },
             { index: 21, hero: "Kerillian", weaponType: "Longbow", name: "Longbow of Bitter Dreams" },
             { index: 22, hero: "Kruber", weaponType: "Mace and Shield", name: "Mace and Shield of Bitter Dreams" },
             { index: 23, hero: "Bardin", weaponType: "Drakefire Pistols", name: "Drakefire Pistols of Bitter Dreams" },
             { index: 24, hero: "Sienna", weaponType: "Flamestorm Staff", name: "Flamestorm Staff of Bitter Dreams" },
-            { index: 25, hero: "Saltzpyre", weaponType: "Fencing Sword", name: "Rapier of Bitter Dreams" },
+            { index: 25, hero: "Viktor", weaponType: "Fencing Sword", name: "Rapier of Bitter Dreams" },
             { index: 26, hero: "Kerillian", weaponType: "1H Sword", name: "Sword of Bitter Dreams" },
             { index: 27, hero: "Kruber", weaponType: "1H Mace", name: "Mace of Bitter Dreams" },
             { index: 28, hero: "Bardin", weaponType: "1H Axe", name: "Axe of Bitter Dreams" },
             { index: 29, hero: "Sienna", weaponType: "Dagger", name: "Dagger of Bitter Dreams" },
-            { index: 30, hero: "Saltzpyre", weaponType: "Falchion", name: "Falchion of Bitter Dreams" },
+            { index: 30, hero: "Viktor", weaponType: "Falchion", name: "Falchion of Bitter Dreams" },
             { index: 31, hero: "Kerillian", weaponType: "Glaive", name: "Glaive of Bitter Dreams" },
             { index: 32, hero: "Kruber", weaponType: "1H Sword", name: "Sword of Bitter Dreams" },
             { index: 33, hero: "Bardin", weaponType: "Great Axe", name: "Great Axe of Bitter Dreams" },
             { index: 34, hero: "Sienna", weaponType: "Beam Staff", name: "Beam Staff of Bitter Dreams" },
-            { index: 35, hero: "Saltzpyre", weaponType: "Crossbow", name: "Crossbow of Bitter Dreams" },
+            { index: 35, hero: "Viktor", weaponType: "Crossbow", name: "Crossbow of Bitter Dreams" },
             { index: 36, hero: "Kerillian", weaponType: "Greatsword", name: "Greatsword of Bitter Dreams" },
             { index: 37, hero: "Kruber", weaponType: "Great Hammer", name: "Great Hammer of Bitter Dreams" },
             { index: 38, hero: "Bardin", weaponType: "Great Hammer", name: "Great Hammer of Bitter Dreams" },
@@ -131,70 +136,138 @@
             { index: 41, hero: "Kerillian", weaponType: "Sword & Dagger", name: "Sword and Dagger of Bitter Dreams" },
             { index: 42, hero: "Kruber", weaponType: "Greatsword", name: "Greatsword of Bitter Dreams" },
             { index: 43, hero: "Bardin", weaponType: "Crossbow", name: "Crossbow of Bitter Dreams" },
-            { index: 44, hero: "Saltzpyre", weaponType: "Repeating Pistol", name: "Repeating Pistol of Bitter Dreams" },
+            { index: 44, hero: "Viktor", weaponType: "Repeating Pistol", name: "Repeating Pistol of Bitter Dreams" },
             { index: 45, hero: "Bardin", weaponType: "Dual Axes", name: "Dual Axes of Bitter Dreams" },
             { index: 46, hero: "Kerillian", weaponType: "Dual Swords", name: "Dual Swords of Bitter Dreams" },
             { index: 47, hero: "Kruber", weaponType: "Halberd", name: "Halberd of Bitter Dreams" },
             { index: 48, hero: "Bardin", weaponType: "Grudge Raker", name: "Grudge Raker of Bitter Dreams" },
             { index: 49, hero: "Sienna", weaponType: "1H Sword", name: "Sword of Bitter Dreams" },
-            { index: 50, hero: "Saltzpyre", weaponType: "Flail", name: "Flail of Bitter Dreams" },
+            { index: 50, hero: "Viktor", weaponType: "Flail", name: "Flail of Bitter Dreams" },
             { index: 51, hero: "Kerillian", weaponType: "Shortbow", name: "Shortbow of Bitter Dreams" },
             { index: 52, hero: "Kruber", weaponType: "Handgun", name: "Handgun of Bitter Dreams" },
             { index: 53, hero: "Bardin", weaponType: "Hammer & Shield", name: "Hammer and Shield of Bitter Dreams" },
             { index: 54, hero: "Kruber", weaponType: "Sword & Shield", name: "Sword and Shield of Bitter Dreams" }
         ];
-        const REFERENCE_DATE = new Date(2025, 0, 14);
-        const REFERENCE_INDEX = 7;
+        
+        // Date de référence: mardi 13 janvier 2026 = Index 5
+        // Les semaines vont du mardi au lundi
+        const REFERENCE_DATE = new Date(2026, 0, 13); // Mardi 13 janvier 2026
+        const REFERENCE_INDEX = 5;
+        
         let selectedHero = 'all';
         let searchTerm = '';
+        
         function getCurrentWeekData() {
             const today = new Date();
             const daysSinceRef = Math.floor((today - REFERENCE_DATE) / (1000 * 60 * 60 * 24));
             const weeksSinceRef = Math.floor(daysSinceRef / 7);
             let currentIndex = ((REFERENCE_INDEX - 1 + weeksSinceRef) % 54) + 1;
             if (currentIndex < 1) currentIndex += 54;
+            
             const currentWeapon = WEAPONS_DATA.find(w => w.index === currentIndex);
+            
+            // Calculer le début de semaine (mardi)
             const weekStart = new Date(REFERENCE_DATE);
             weekStart.setDate(weekStart.getDate() + (weeksSinceRef * 7));
             const weekEnd = new Date(weekStart);
-            weekEnd.setDate(weekEnd.getDate() + 6);
-            return { weapon: currentWeapon, weekStart, weekEnd };
+            weekEnd.setDate(weekEnd.getDate() + 6); // Jusqu'au lundi suivant
+            
+            // Calculer le numéro de semaine
+            const weekNumber = Math.floor((weekStart - new Date(weekStart.getFullYear(), 0, 1)) / (1000 * 60 * 60 * 24 * 7)) + 1;
+            
+            return { weapon: currentWeapon, weekStart, weekEnd, weekNumber, currentIndex };
         }
+        
         function getWeekForWeapon(weaponIndex) {
             let weeksDiff = weaponIndex - REFERENCE_INDEX;
             if (weeksDiff < 0) weeksDiff += 54;
+            
+            // Calculer le début de semaine (mardi)
             const weekStart = new Date(REFERENCE_DATE);
             weekStart.setDate(weekStart.getDate() + (weeksDiff * 7));
             const weekEnd = new Date(weekStart);
-            weekEnd.setDate(weekEnd.getDate() + 6);
+            weekEnd.setDate(weekEnd.getDate() + 6); // Jusqu'au lundi suivant
+            
+            // Calculer le numéro de semaine
             const weekNumber = Math.floor((weekStart - new Date(weekStart.getFullYear(), 0, 1)) / (1000 * 60 * 60 * 24 * 7)) + 1;
+            
             return { weekStart, weekEnd, weekNumber };
         }
-        function formatDate(date) { return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }); }
+        
+        function formatDate(date, includeYearIfDifferent = true) { 
+            const currentYear = new Date().getFullYear();
+            const dateYear = date.getFullYear();
+            
+            if (includeYearIfDifferent && dateYear !== currentYear) {
+                return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+            return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }); 
+        }
+        
+        function formatDateWithYear(date) {
+            return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+        
         function displayCurrentWeek() {
             const currentWeek = getCurrentWeekData();
             document.getElementById('current-hero-badge').textContent = currentWeek.weapon.hero;
             document.getElementById('current-hero-badge').className = `hero-badge hero-${currentWeek.weapon.hero}`;
             document.getElementById('current-weapon-type').textContent = currentWeek.weapon.weaponType;
             document.getElementById('current-weapon-name').textContent = currentWeek.weapon.name;
-            document.getElementById('current-week-dates').textContent = `Du ${formatDate(currentWeek.weekStart)} au ${formatDate(currentWeek.weekEnd)}`;
+            
+            // Afficher le numéro de semaine et les dates
+            const currentYear = new Date().getFullYear();
+            const yearSuffix = currentWeek.weekEnd.getFullYear() !== currentYear ? ` ${currentWeek.weekEnd.getFullYear()}` : '';
+            document.getElementById('current-week-dates').textContent = 
+                `Semaine ${currentWeek.weekNumber} - Du ${formatDate(currentWeek.weekStart, false)} au ${formatDate(currentWeek.weekEnd, false)}${yearSuffix}`;
         }
+        
         function filterWeapons() {
             return WEAPONS_DATA.filter(weapon => {
                 const matchesHero = selectedHero === 'all' || weapon.hero === selectedHero;
-                const matchesSearch = weapon.weaponType.toLowerCase().includes(searchTerm.toLowerCase()) || weapon.name.toLowerCase().includes(searchTerm.toLowerCase());
+                const matchesSearch = weapon.weaponType.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                     weapon.name.toLowerCase().includes(searchTerm.toLowerCase());
                 return matchesHero && matchesSearch;
             });
         }
+        
         function displayResults() {
             const filtered = filterWeapons();
+            const currentWeek = getCurrentWeekData();
+            const currentYear = new Date().getFullYear();
             const resultsList = document.getElementById('results-list');
             document.getElementById('results-count').textContent = `Résultats (${filtered.length})`;
-            resultsList.innerHTML = filtered.map(weapon => {
+            
+            // Trier par date (ordre chronologique à partir du début de l'année)
+            const sortedWeapons = filtered.map(weapon => {
                 const weekInfo = getWeekForWeapon(weapon.index);
-                return `<div class="weapon-card"><div class="weapon-card-content"><div class="weapon-info"><div class="hero-badge hero-${weapon.hero}">${weapon.hero}</div><div class="weapon-type">${weapon.weaponType}</div><div class="weapon-illusion">${weapon.name}</div></div><div class="week-info"><div class="week-number">Semaine ${weekInfo.weekNumber}</div><div class="week-dates">${formatDate(weekInfo.weekStart)} - ${formatDate(weekInfo.weekEnd)}</div></div></div></div>`;
+                return { ...weapon, weekInfo };
+            }).sort((a, b) => a.weekInfo.weekStart - b.weekInfo.weekStart);
+            
+            resultsList.innerHTML = sortedWeapons.map(weapon => {
+                const isCurrentWeek = weapon.index === currentWeek.currentIndex;
+                const cardClass = isCurrentWeek ? 'weapon-card current-week-card' : 'weapon-card';
+                
+                // Afficher l'année si elle est différente de l'année en cours
+                const startDateFormatted = formatDate(weapon.weekInfo.weekStart, true);
+                const endDateFormatted = formatDate(weapon.weekInfo.weekEnd, true);
+                
+                return `<div class="${cardClass}">
+                    <div class="weapon-card-content">
+                        <div class="weapon-info">
+                            <div class="hero-badge hero-${weapon.hero}">${weapon.hero}</div>
+                            <div class="weapon-type">${weapon.weaponType}</div>
+                            <div class="weapon-illusion">${weapon.name}</div>
+                        </div>
+                        <div class="week-info">
+                            <div class="week-number">Semaine ${weapon.weekInfo.weekNumber}</div>
+                            <div class="week-dates">${startDateFormatted} - ${endDateFormatted}</div>
+                        </div>
+                    </div>
+                </div>`;
             }).join('');
         }
+        
         document.getElementById('hero-filters').addEventListener('click', (e) => {
             if (e.target.classList.contains('hero-filter-btn')) {
                 document.querySelectorAll('.hero-filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -203,7 +276,12 @@
                 displayResults();
             }
         });
-        document.getElementById('search-input').addEventListener('input', (e) => { searchTerm = e.target.value; displayResults(); });
+        
+        document.getElementById('search-input').addEventListener('input', (e) => { 
+            searchTerm = e.target.value; 
+            displayResults(); 
+        });
+        
         displayCurrentWeek();
         displayResults();
     </script>
