@@ -32,6 +32,37 @@
             pointer-events: none;
         }
 
+        /* Screen shake animation */
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5px, 2px); }
+            20% { transform: translate(5px, -2px); }
+            30% { transform: translate(-3px, 3px); }
+            40% { transform: translate(3px, -3px); }
+            50% { transform: translate(-2px, 2px); }
+            60% { transform: translate(2px, -2px); }
+            70% { transform: translate(-1px, 1px); }
+            80% { transform: translate(1px, -1px); }
+            90% { transform: translate(-1px, 0px); }
+        }
+
+        .shake {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        /* Muzzle flash effect */
+        .muzzle-flash {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            animation: flashAnimation 0.1s ease-out;
+        }
+
+        @keyframes flashAnimation {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(2); }
+        }
+
         .hud {
             position: fixed;
             top: 20px;
@@ -44,6 +75,7 @@
             padding: var(--space-lg) var(--space-2xl);
             border: 2px solid var(--gold-dark);
             backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
         }
 
         .hud-item {
@@ -65,10 +97,30 @@
             font-weight: 700;
             color: var(--gold-primary);
             text-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .hud-value.pulse {
+            animation: scorePulse 0.3s ease-out;
+        }
+
+        @keyframes scorePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); color: #ffd700; }
+            100% { transform: scale(1); }
         }
 
         .hud-value.time {
             color: var(--blood-bright);
+        }
+
+        .hud-value.time.warning {
+            animation: timeWarning 0.5s ease-in-out infinite;
+        }
+
+        @keyframes timeWarning {
+            0%, 100% { color: var(--blood-bright); transform: scale(1); }
+            50% { color: #ff0000; transform: scale(1.15); }
         }
 
         .rat {
@@ -78,14 +130,40 @@
             user-select: none;
             pointer-events: auto;
             z-index: 100;
+            animation: ratWiggle 0.5s ease-in-out infinite;
+        }
+
+        @keyframes ratWiggle {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
         }
 
         .rat:hover {
-            transform: scale(1.1);
+            transform: scale(1.15) !important;
+            filter: brightness(1.2);
         }
 
         .rat:active {
-            transform: scale(0.9);
+            transform: scale(0.9) !important;
+        }
+
+        /* Particle effects */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 200;
+            animation: particleFly 1s ease-out forwards;
+        }
+
+        @keyframes particleFly {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
         }
 
         .start-screen,
@@ -115,6 +193,12 @@
             margin-bottom: var(--space-lg);
             text-transform: uppercase;
             letter-spacing: 0.1em;
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(201, 169, 97, 0.5)); }
+            50% { filter: drop-shadow(0 0 25px rgba(201, 169, 97, 0.8)); }
         }
 
         .screen-subtitle {
@@ -131,6 +215,7 @@
             padding: var(--space-xl);
             margin-bottom: var(--space-2xl);
             min-width: 300px;
+            box-shadow: 0 0 30px rgba(201, 169, 97, 0.2);
         }
 
         .stat-row {
@@ -163,12 +248,20 @@
             font-size: 1.2rem;
             padding: var(--space-md) var(--space-2xl);
             margin: var(--space-md);
+            transition: all 0.3s ease;
+        }
+
+        .btn-large:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(201, 169, 97, 0.4);
         }
 
         .difficulty-selector {
             display: flex;
             gap: var(--space-md);
             margin-bottom: var(--space-2xl);
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .difficulty-btn {
@@ -185,6 +278,7 @@
             border-color: var(--gold-primary);
             background: rgba(201, 169, 97, 0.2);
             color: var(--gold-primary);
+            box-shadow: 0 0 20px rgba(201, 169, 97, 0.4);
         }
 
         .difficulty-btn:hover {
@@ -195,21 +289,21 @@
         .blood-splatter {
             position: absolute;
             pointer-events: none;
-            animation: splatter 0.5s ease-out forwards;
             z-index: 50;
+            animation: splatter 0.6s ease-out forwards;
         }
 
         @keyframes splatter {
             0% {
                 opacity: 1;
-                transform: scale(0);
+                transform: scale(0) rotate(0deg);
             }
             50% {
-                transform: scale(1.2);
+                transform: scale(1.3) rotate(180deg);
             }
             100% {
                 opacity: 0;
-                transform: scale(1);
+                transform: scale(1) rotate(360deg);
             }
         }
 
@@ -222,16 +316,95 @@
             font-size: 3rem;
             font-weight: 900;
             color: var(--blood-bright);
-            text-shadow: 0 0 20px var(--blood-bright);
+            text-shadow: 0 0 20px var(--blood-bright), 0 0 40px var(--blood-bright);
             pointer-events: none;
             z-index: 999;
-            animation: comboPopup 0.6s ease-out forwards;
+            animation: comboPopup 0.8s ease-out forwards;
         }
 
         @keyframes comboPopup {
             0% {
                 opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5) rotate(-15deg);
+            }
+            40% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.3) rotate(5deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg) translateY(-100px);
+            }
+        }
+
+        /* Hit marker */
+        .hit-marker {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            color: #fff;
+            font-size: 3rem;
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff;
+            animation: hitMarkerAnim 0.3s ease-out;
+        }
+
+        @keyframes hitMarkerAnim {
+            0% {
+                opacity: 1;
                 transform: translate(-50%, -50%) scale(0.5);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.5);
+            }
+        }
+
+        /* Damage numbers */
+        .damage-number {
+            position: absolute;
+            pointer-events: none;
+            z-index: 300;
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            font-size: 2rem;
+            color: #ff4444;
+            text-shadow: 0 0 10px #ff0000, 2px 2px 4px #000;
+            animation: damageFloat 1s ease-out forwards;
+        }
+
+        @keyframes damageFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(0.5);
+            }
+            50% {
+                transform: translateY(-30px) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-60px) scale(0.8);
+            }
+        }
+
+        /* Countdown animation */
+        .countdown {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cinzel', serif;
+            font-size: 10rem;
+            font-weight: 900;
+            color: var(--gold-primary);
+            text-shadow: 0 0 40px var(--gold-primary);
+            z-index: 5000;
+            animation: countdownAnim 1s ease-in-out;
+        }
+
+        @keyframes countdownAnim {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
             }
             50% {
                 opacity: 1;
@@ -239,8 +412,27 @@
             }
             100% {
                 opacity: 0;
-                transform: translate(-50%, -50%) scale(1) translateY(-50px);
+                transform: translate(-50%, -50%) scale(0.8);
             }
+        }
+
+        /* Vignette effect on damage */
+        .damage-vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 400;
+            background: radial-gradient(ellipse at center, transparent 30%, rgba(139, 26, 26, 0.6) 100%);
+            opacity: 0;
+            animation: damageVignette 0.3s ease-out;
+        }
+
+        @keyframes damageVignette {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
 
         @media (max-width: 768px) {
@@ -253,15 +445,29 @@
                 font-size: 1.5rem;
             }
 
+            .hud-label {
+                font-size: 0.7rem;
+            }
+
             .difficulty-selector {
                 flex-direction: column;
+                width: 100%;
+            }
+
+            .difficulty-btn {
+                width: 100%;
+            }
+
+            .combo {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Back Button -->
     <a href="index.html" class="back-button" style="z-index: 9999;">Retour</a>
-
+    
     <div class="game-container" id="gameContainer">
         <!-- HUD -->
         <div class="hud">
@@ -282,8 +488,8 @@
         <!-- Start Screen -->
         <div class="start-screen" id="startScreen">
             <h1 class="screen-title">🐀 Shoot the Rat 🐀</h1>
-            <p class="screen-subtitle">« Éradiquez la vermine ! »</p>
-            <p class="screen-subtitle" style="color: var(--gold-primary); margin-top: -20px; margin-bottom: 30px;">Massacrez un maximum de rats en 30 secondes</p>
+            <p class="screen-subtitle">« Purge les vermines de l'Empire ! »</p>
+            <p class="screen-subtitle">Massacrez un maximum de rats en 30 secondes</p>
             
             <div class="difficulty-selector">
                 <button class="difficulty-btn" data-difficulty="easy">
@@ -334,7 +540,6 @@
             </div>
 
             <button class="btn btn-large btn-primary" onclick="restartGame()">🔄 Rejouer</button>
-            <button class="btn btn-large" onclick="backToMenu()">🏠 Menu</button>
         </div>
     </div>
 
@@ -351,11 +556,11 @@
         let difficulty = 'normal';
         
         const difficulties = {
-            easy: { size: 120, minDelay: 0, maxDelay: 0 },
-            normal: { size: 100, minDelay: 0, maxDelay: 0 },
-            hard: { size: 80, minDelay: 0, maxDelay: 0 },
-            legend: { size: 60, minDelay: 0, maxDelay: 0 },
-            cataclysm: { size: 40, minDelay: 0, maxDelay: 0 }
+            easy: { size: 120, minDelay: 0, maxDelay: 0, spawnRate: 800 },
+            normal: { size: 100, minDelay: 0, maxDelay: 0, spawnRate: 600 },
+            hard: { size: 80, minDelay: 0, maxDelay: 0, spawnRate: 500 },
+            legend: { size: 60, minDelay: 0, maxDelay: 0, spawnRate: 400 },
+            cataclysm: { size: 40, minDelay: 0, maxDelay: 0, spawnRate: 300 }
         };
 
         // Load high score
@@ -372,28 +577,54 @@
         });
 
         function startGame() {
-            document.getElementById('startScreen').style.display = 'none';
-            score = 0;
-            timeLeft = 30;
-            clicks = 0;
-            hits = 0;
-            combo = 0;
-            bestCombo = 0;
-            gameActive = true;
-            
-            document.getElementById('score').textContent = score;
-            document.getElementById('timer').textContent = timeLeft;
-            
-            timerInterval = setInterval(() => {
-                timeLeft--;
+            // Countdown before start
+            showCountdown(3, () => {
+                document.getElementById('startScreen').style.display = 'none';
+                score = 0;
+                timeLeft = 30;
+                clicks = 0;
+                hits = 0;
+                combo = 0;
+                bestCombo = 0;
+                gameActive = true;
+                
+                document.getElementById('score').textContent = score;
                 document.getElementById('timer').textContent = timeLeft;
                 
-                if (timeLeft <= 0) {
-                    endGame();
-                }
-            }, 1000);
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    const timerEl = document.getElementById('timer');
+                    timerEl.textContent = timeLeft;
+                    
+                    // Warning animation when time is low
+                    if (timeLeft <= 10) {
+                        timerEl.classList.add('warning');
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        endGame();
+                    }
+                }, 1000);
+                
+                spawnRat();
+            });
+        }
+
+        function showCountdown(count, callback) {
+            if (count === 0) {
+                callback();
+                return;
+            }
             
-            spawnRat();
+            const countdownEl = document.createElement('div');
+            countdownEl.className = 'countdown';
+            countdownEl.textContent = count;
+            document.body.appendChild(countdownEl);
+            
+            setTimeout(() => {
+                countdownEl.remove();
+                showCountdown(count - 1, callback);
+            }, 1000);
         }
 
         function spawnRat() {
@@ -439,10 +670,22 @@
                 bestCombo = combo;
             }
             
-            document.getElementById('score').textContent = score;
+            // Update score with pulse animation
+            const scoreEl = document.getElementById('score');
+            scoreEl.textContent = score;
+            scoreEl.classList.add('pulse');
+            setTimeout(() => scoreEl.classList.remove('pulse'), 300);
             
-            // Blood splatter effect
+            // Screen shake
+            document.getElementById('gameContainer').classList.add('shake');
+            setTimeout(() => document.getElementById('gameContainer').classList.remove('shake'), 300);
+            
+            // Effects
             createBloodSplatter(e.clientX, e.clientY);
+            createParticles(e.clientX, e.clientY);
+            createHitMarker(e.clientX, e.clientY);
+            createDamageNumber(e.clientX, e.clientY);
+            createMuzzleFlash(e.clientX, e.clientY);
             
             // Show combo
             if (combo >= 5 && combo % 5 === 0) {
@@ -469,7 +712,68 @@
             
             document.getElementById('gameContainer').appendChild(splatter);
             
-            setTimeout(() => splatter.remove(), 500);
+            setTimeout(() => splatter.remove(), 600);
+        }
+
+        function createParticles(x, y) {
+            const colors = ['🔴', '💢', '💥', '✨'];
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.innerHTML = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.fontSize = '1rem';
+                
+                const angle = (Math.PI * 2 * i) / 8;
+                const distance = 50 + Math.random() * 50;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+                
+                document.getElementById('gameContainer').appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        function createHitMarker(x, y) {
+            const marker = document.createElement('div');
+            marker.className = 'hit-marker';
+            marker.innerHTML = '✕';
+            marker.style.left = x + 'px';
+            marker.style.top = y + 'px';
+            
+            document.body.appendChild(marker);
+            
+            setTimeout(() => marker.remove(), 300);
+        }
+
+        function createDamageNumber(x, y) {
+            const dmg = document.createElement('div');
+            dmg.className = 'damage-number';
+            dmg.textContent = '+1';
+            dmg.style.left = (x - 20) + 'px';
+            dmg.style.top = (y - 30) + 'px';
+            
+            document.getElementById('gameContainer').appendChild(dmg);
+            
+            setTimeout(() => dmg.remove(), 1000);
+        }
+
+        function createMuzzleFlash(x, y) {
+            const flash = document.createElement('div');
+            flash.className = 'muzzle-flash';
+            flash.innerHTML = '💫';
+            flash.style.left = x + 'px';
+            flash.style.top = y + 'px';
+            flash.style.fontSize = '3rem';
+            
+            document.body.appendChild(flash);
+            
+            setTimeout(() => flash.remove(), 100);
         }
 
         function showCombo(comboCount) {
@@ -479,7 +783,7 @@
             
             document.getElementById('gameContainer').appendChild(comboEl);
             
-            setTimeout(() => comboEl.remove(), 600);
+            setTimeout(() => comboEl.remove(), 800);
         }
 
         // Track misses
@@ -487,6 +791,12 @@
             if (gameActive && !e.target.classList.contains('rat')) {
                 clicks++;
                 combo = 0; // Reset combo on miss
+                
+                // Show damage vignette on miss
+                const vignette = document.createElement('div');
+                vignette.className = 'damage-vignette';
+                document.body.appendChild(vignette);
+                setTimeout(() => vignette.remove(), 300);
             }
         });
 
@@ -528,12 +838,14 @@
 
         function restartGame() {
             document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('timer').classList.remove('warning');
             startGame();
         }
 
         function backToMenu() {
             document.getElementById('gameOverScreen').style.display = 'none';
             document.getElementById('startScreen').style.display = 'flex';
+            document.getElementById('timer').classList.remove('warning');
         }
     </script>
 </body>
